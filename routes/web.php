@@ -5,12 +5,14 @@ use App\Models\ListTask;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    // return view('tasks', ['tasks' => Task::all()]);
     return view('lists', ['lists' => ListTask::all()]);
 });
 
 Route::get('/tasks/{id}', function ($id) {
-    return view('/tasks', ['tasks' => Task::find($id) ]);
+    $listTask = ListTask::find($id);
+    $task = $listTask->tasks;
+
+    return view('/tasks', ['tasks' => $task]);
 });
 
 Route::get('/important', function () {

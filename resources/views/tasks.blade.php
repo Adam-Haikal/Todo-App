@@ -3,9 +3,11 @@
         Tasks
     </x-slot:heading>
 
-    <h2 class="text-lg font-bold">{{ $tasks['title'] }}</h2>
+    @foreach ($tasks as $task)
+        <h2 class="text-lg font-bold">{{ $task['title'] }}</h2>
 
-    <p class="">{{ $tasks['description'] }}</p>
+        <p class="">{{ $task['description'] }}</p>
 
-    <p>{{ $tasks['is_completed'] }}</p>
+        <p>{{ $task['is_completed'] }}</p>
+    @endforeach
 </x-layout>
