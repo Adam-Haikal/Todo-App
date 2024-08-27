@@ -20,7 +20,7 @@
                         {{ $list['name'] }}
 
                         {{-- Display tasks count --}}
-                        ({{ $list->Tasks->count() }})
+                        ({{ $list->tasks->count() }})
                     </div>
                     <p class="text-sm font-normal text-gray-500">
                         Last updated: {{ $list['updated_at'] }}

@@ -23,4 +23,10 @@ class Task extends Model
     {
         return $this->belongsTo(ListTask::class);
     }
+
+    public function tags()
+    {
+        // return $this->belongsToMany(Tag::class, 'task_tag', 'task_listing_id', 'tag_id');
+        return $this->belongsToMany(Tag::class, foreignPivotKey: 'task_listing_id');
+    }
 }

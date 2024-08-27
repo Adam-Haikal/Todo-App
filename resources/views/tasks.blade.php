@@ -27,15 +27,23 @@
                     </p>
                 </div>
 
+                <div class="w-3/12 self-start bg-amber-300 p-1">
+                    @foreach ($task->tags as $tag)
+                        <span
+                            class="inline-flex rounded-md bg-green-300 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-green-500/10">{{ $tag->name }}
+                        </span>
+                    @endforeach
+                </div>
+
                 <form action="/"
                     method="POST"
                     class="my-3 mr-4 flex space-x-1">
                     @csrf
 
-                    <x-list.edit-button/>
-                    <x-list.delete-button/>
+                    <x-list.edit-button />
+                    <x-list.delete-button />
                 </form>
-                
+
             </li>
         </ul>
     @endforeach
