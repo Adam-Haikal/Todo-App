@@ -4,15 +4,19 @@ use App\Models\Task;
 use App\Models\ListTask;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('lists', ['lists' => ListTask::all()]);
+Route::get('/tasks', function () {
+    return view('tasks.index', ['lists' => ListTask::all()]);
+});
+
+Route::get('/tasks/create', function () {
+    return view('tasks.create');
 });
 
 Route::get('/tasks/{id}', function ($id) {
     $listTask = ListTask::find($id);
     $task = $listTask->tasks;
 
-    return view('/tasks', ['tasks' => $task]);
+    return view('tasks.show', ['tasks' => $task]);
 });
 
 Route::get('/important', function () {

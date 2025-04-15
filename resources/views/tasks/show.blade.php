@@ -11,7 +11,7 @@
     @endif
 
     @foreach ($tasks as $task)
-        <ul class="rounded-lg border border-gray-200 bg-gray-300">
+        <ul class="rounded-lg border border-gray-200 bg-white shadow">
             <li class="flex w-full items-center rounded-t-lg border-b border-gray-600 ps-3 dark:border-gray-200">
 
                 <x-list.checkbox :task="$task" />
@@ -27,7 +27,7 @@
                     </p>
                 </div>
 
-                <div class="w-3/12 self-start bg-amber-300 p-1">
+                <div class="w-3/12 self-start p-1">
                     @foreach ($task->tags as $tag)
                         <span
                             class="inline-flex rounded-md bg-green-300 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-green-500/10">{{ $tag->name }}

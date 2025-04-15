@@ -1,6 +1,6 @@
-@props(['type' => 'submit', 'color'])
+@props(['type' => 'submit', 'color', 'size' => 'h-8 w-8'])
 
 <button type={{ $type }}
-    class="{{ $color }} flex h-8 w-8 items-center justify-center rounded-lg">
+    {{ $attributes->merge(['class' => "$color $size flex items-center justify-center rounded-lg"]) }}>
     {{ $slot }}
 </button>

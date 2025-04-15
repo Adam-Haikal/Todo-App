@@ -1,6 +1,14 @@
 <x-nav.layout>
     <x-slot:heading>
         Lists
+
+        <a rel="stylesheet"
+            href="/tasks/create">
+            <x-list.button color="bg-teal-600"
+                size="h-auto w-auto">
+                Create a new list
+            </x-list.button>
+        </a>
     </x-slot:heading>
 
     @if ($lists->count() == 0)
@@ -11,7 +19,7 @@
     @endif
 
     @foreach ($lists as $list)
-        <ul class="w-full rounded-lg border border-gray-200 bg-gray-300 ps-3">
+        <ul class="w-full rounded-lg border border-gray-200 bg-white shadow ps-3">
             <li class="flex w-full items-center rounded-t-lg border-b border-gray-600 ps-3 dark:border-gray-200">
 
                 <a href="/tasks/{{ $list['id'] }}"
@@ -32,10 +40,10 @@
                     class="my-3 mr-4 flex space-x-1">
                     @csrf
 
-                    <x-list.edit-button/>
-                    <x-list.delete-button/>
+                    <x-list.edit-button />
+                    <x-list.delete-button />
                 </form>
-                
+
             </li>
         </ul>
     @endforeach

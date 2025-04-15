@@ -25,7 +25,7 @@
                             <div class="hidden md:block">
                                 <div class="ml-10 flex items-baseline space-x-4">
                                     <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                                    <x-nav.nav-link href="/"
+                                    <x-nav.nav-link href="/tasks"
                                         :active="request()->is('/')">Tasks</x-nav.nav-link>
                                     <x-nav.nav-link href="/important"
                                         :active="request()->is('important')">Important</x-nav.nav-link>
@@ -139,7 +139,7 @@
                     <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                         <a href="/"
-                            class="{{ request()->is('/') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} block rounded-md px-3 py-2 text-base font-medium"
+                            class="{{ request()->is('/tasks') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} block rounded-md px-3 py-2 text-base font-medium"
                             aria-current="page">Tasks</a>
                         <a href="/important"
                             class="{{ request()->is('important') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} block rounded-md px-3 py-2 text-base font-medium">Important</a>

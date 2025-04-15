@@ -22,3 +22,10 @@ class ListTaskFactory extends Factory
         ];
     }
 }
+
+/**
+ * php artisan tinker
+ * $task = App\Models\Task::first();
+ * $task->listTask;
+ * $task->listTask->name;
+ */
