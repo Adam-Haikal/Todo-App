@@ -5,7 +5,7 @@ use App\Models\ListTask;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/tasks', function () {
-    return view('tasks.index', ['lists' => ListTask::all()]);
+    return view('tasks.index', ['lists' => ListTask::latest()->simplePaginate(9)]);
 });
 
 Route::get('/tasks/create', function () {
@@ -17,6 +17,18 @@ Route::get('/tasks/{id}', function ($id) {
     $task = $listTask->tasks;
 
     return view('tasks.show', ['tasks' => $task]);
+});
+
+Route::post('/tasks', function () {
+    //validation
+    
+    Task::create([
+        'list'=> request('list'),
+        'task'=> request('task'),
+        'description'=> request('description'),
+    ]);
+
+    return redirect('/tasks');
 });
 
 Route::get('/important', function () {

@@ -1,14 +1,14 @@
 <x-nav.layout>
     <x-slot:heading>
-        Lists
+        {{-- Heading --}}
+        <div class="flex items-center justify-between">
+            Lists
 
-        <a rel="stylesheet"
-            href="/tasks/create">
-            <x-list.button color="bg-teal-600"
-                size="h-auto w-auto">
-                Create a new list
-            </x-list.button>
-        </a>
+            <a rel="stylesheet"
+                href="/tasks/create">
+                <x-list.plus-button class="mx-4" />
+            </a>
+        </div>
     </x-slot:heading>
 
     @if ($lists->count() == 0)
@@ -19,7 +19,7 @@
     @endif
 
     @foreach ($lists as $list)
-        <ul class="w-full rounded-lg border border-gray-200 bg-white shadow ps-3">
+        <ul class="w-full rounded-lg border border-gray-200 bg-white ps-3 shadow">
             <li class="flex w-full items-center rounded-t-lg border-b border-gray-600 ps-3 dark:border-gray-200">
 
                 <a href="/tasks/{{ $list['id'] }}"
@@ -47,4 +47,8 @@
             </li>
         </ul>
     @endforeach
+    <div class="mt-4">
+        {{-- Pagination --}}
+        {{ $lists->links() }}
+    </div>
 </x-nav.layout>
