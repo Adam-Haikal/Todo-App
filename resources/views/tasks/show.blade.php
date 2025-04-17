@@ -6,8 +6,8 @@
     @if ($tasks->count() == 0)
         <p>No tasks created</p>
 
-        <a href="/tasks/create"
-            class="text-blue-500 hover:underline">Create a new task</a>
+        <a href="/tasks/edit"
+            class="text-blue-500 hover:underline">Add new task</a>
     @endif
 
     @foreach ($tasks as $task)
@@ -20,7 +20,7 @@
                 <div class="mx-2 ms-2 flex w-full flex-col py-1">
                     <label for="{{ $task['id'] }}"
                         class="text-md font-bold text-gray-300 dark:text-gray-900">
-                        {{ $task['title'] }}
+                        {{ $task['task_name'] }}
                     </label>
                     <p class="text-sm font-medium italic text-gray-300 dark:text-gray-600">
                         {{ $task['description'] }}

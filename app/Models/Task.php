@@ -13,10 +13,12 @@ class Task extends Model
     protected $table = 'task_listings';
 
     protected $fillable = [
-        'title',
+        'list_task_id',
+        'task_name',
         'description',
         'is_completed'
     ];
+    // protected $guarded = [];
 
     // Task belong to List
     public function listTask()

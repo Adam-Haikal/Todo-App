@@ -1,14 +1,14 @@
 <x-nav.layout>
     <x-slot:heading>
-        Create a new task
+        Create a new list
     </x-slot:heading>
 
-    <form action="/tasks"
+    <form action="{{ route('tasks.store') }}"
         method="POST">
         @csrf
 
         <input type="text"
-            name="list"
+            name="list_name"
             placeholder="Untitled List"
             class="rounded border-transparent bg-gray-300 px-4 py-2 text-gray-700 placeholder-gray-600 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             id="list"
@@ -23,7 +23,7 @@
             </div> --}}
 
             <label for="tasks">Task</label>
-            <input name="task"
+            <input name="task_name"
                 id="task"
                 required
                 class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"></input>
@@ -49,4 +49,5 @@
                 class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent px-4 font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">Delete</x-list.button>
         </div>
     </form>
+
 </x-nav.layout>

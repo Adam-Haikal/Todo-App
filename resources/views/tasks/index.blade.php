@@ -5,7 +5,7 @@
             Lists
 
             <a rel="stylesheet"
-                href="/tasks/create">
+                href={{ route('tasks.create') }}>
                 <x-list.plus-button class="mx-4" />
             </a>
         </div>
@@ -25,7 +25,7 @@
                 <a href="/tasks/{{ $list['id'] }}"
                     class="mx-2 ms-2 flex w-full flex-col py-1">
                     <div class="text-lg font-bold text-blue-500 hover:underline">
-                        {{ $list['name'] }}
+                        {{ $list['list_name'] }}
 
                         {{-- Display tasks count --}}
                         ({{ $list->tasks->count() }})
@@ -35,14 +35,23 @@
                     </p>
                 </a>
 
-                <form action="/"
+                <div class="my-3 mr-4 flex space-x-1">
+                    <a rel="stylesheet"
+                        href="/tasks/update">
+                        <x-list.edit-button />
+                    </a>
+                    <a rel="stylesheet"
+                        href="/tasks/delete">
+                        <x-list.delete-button />
+                </div>
+                {{-- <form action="/"
                     method="POST"
                     class="my-3 mr-4 flex space-x-1">
                     @csrf
 
                     <x-list.edit-button />
                     <x-list.delete-button />
-                </form>
+                </form> --}}
 
             </li>
         </ul>

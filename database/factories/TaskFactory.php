@@ -18,7 +18,7 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'title'=> fake()->sentence(2),
+            'task_name'=> fake()->sentence(2),
             'list_task_id' => ListTask::factory(),
             'description' => fake()->sentence(3),
             'is_completed' => fake()->boolean()

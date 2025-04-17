@@ -1,35 +1,16 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use App\Models\Task;
 use App\Models\ListTask;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/tasks', function () {
-    return view('tasks.index', ['lists' => ListTask::latest()->simplePaginate(9)]);
-});
+Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+Route::get('/tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
+Route::post('/tasks/{id}/add', [TaskController::class, 'addTask'])->name('tasks.addTask');
 
-Route::get('/tasks/create', function () {
-    return view('tasks.create');
-});
-
-Route::get('/tasks/{id}', function ($id) {
-    $listTask = ListTask::find($id);
-    $task = $listTask->tasks;
-
-    return view('tasks.show', ['tasks' => $task]);
-});
-
-Route::post('/tasks', function () {
-    //validation
-    
-    Task::create([
-        'list'=> request('list'),
-        'task'=> request('task'),
-        'description'=> request('description'),
-    ]);
-
-    return redirect('/tasks');
-});
 
 Route::get('/important', function () {
     return view('important');

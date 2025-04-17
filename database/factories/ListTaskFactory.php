@@ -18,7 +18,7 @@ class ListTaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->jobTitle(),
+            'list_name' => fake()->jobTitle(),
         ];
     }
 }
@@ -27,5 +27,5 @@ class ListTaskFactory extends Factory
  * php artisan tinker
  * $task = App\Models\Task::first();
  * $task->listTask;
- * $task->listTask->name;
+ * $task->listTask->list_name;
  */

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('task_listings', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(App\Models\ListTask::class)->constrained()->cascadeOnDelete();
-            $table->string('title');
+            $table->string('task_name')->nullable();;
             $table->string('description')->nullable();
             $table->boolean('is_completed')->default(false);
             $table->timestamps();
