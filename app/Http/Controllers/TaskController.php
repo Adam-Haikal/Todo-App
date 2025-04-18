@@ -17,7 +17,7 @@ class TaskController extends Controller {
         $list = ListTask::findOrFail($id);
         $task = $list->tasks;
 
-        return view('tasks.show', ['tasks' => $task]);
+        return view('tasks.show', ['tasks' => $task, 'list'=> $list]);
     }
 
     public function create() {

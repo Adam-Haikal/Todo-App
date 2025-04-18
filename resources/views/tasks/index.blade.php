@@ -1,9 +1,12 @@
 <x-nav.layout>
     <x-slot:heading>
         {{-- Heading --}}
-        <div class="flex items-center justify-between">
-            Lists
+        <div class="flex items-center justify-between text-2xl font-bold">
+            <h1 class="text-2xl font-bold text-gray-900">
+                Lists
+            </h1>
 
+            {{-- Add new list button --}}
             <a rel="stylesheet"
                 href={{ route('tasks.create') }}>
                 <x-list.plus-button class="mx-4" />
@@ -14,7 +17,7 @@
     @if ($lists->count() == 0)
         <p>No lists created</p>
 
-        <a href="/tasks/create"
+        <a href={{ route('tasks.create') }}
             class="text-blue-500 hover:underline">Create a new list</a>
     @endif
 
