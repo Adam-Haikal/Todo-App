@@ -1,5 +1,4 @@
-<x-list.button color="bg-teal-500"
-    {{ $attributes->merge(['class' => 'bg-teal-200']) }}>
+<x-list.button {{ $attributes->merge(['class' => 'bg-teal-300 hover:bg-teal-400 focus:ring-teal-400']) }}>
     <x-list.button-icon fill="none"
         stroke="white"
         stroke-width="2.5">

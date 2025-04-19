@@ -36,18 +36,15 @@
         </div>
 
         <div class="flex items-center gap-2">
-            <x-list.button color="bg-green-500"
-                class="hover:bg-gray-300"
-                size="h-8 max-w-sm"
+            <x-list.button size="h-8 max-w-sm"
                 type="submit"
                 value="submit"
-                class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1">Add</x-list.button>
+                class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent bg-green-500 px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1">Add</x-list.button>
 
-            <x-list.button color="bg-red-500"
-                size="h-8 max-w-sm"
+            <x-list.button size="h-8 max-w-sm"
                 type="reset"
                 value="reset"
-                class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">Delete</x-list.button>
+                class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent bg-red-500 px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">Delete</x-list.button>
         </div>
     </form>
 

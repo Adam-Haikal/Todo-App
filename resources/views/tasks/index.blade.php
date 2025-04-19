@@ -37,25 +37,11 @@
                         Last updated: {{ $list['updated_at'] }}
                     </p>
                 </a>
-
+                
                 <div class="my-3 mr-4 flex space-x-1">
-                    <a rel="stylesheet"
-                        href="/tasks/update">
-                        <x-list.edit-button />
-                    </a>
-                    <a rel="stylesheet"
-                        href="/tasks/delete">
-                        <x-list.delete-button />
-                </div>
-                {{-- <form action="/"
-                    method="POST"
-                    class="my-3 mr-4 flex space-x-1">
-                    @csrf
-
                     <x-list.edit-button />
                     <x-list.delete-button />
-                </form> --}}
-
+                </div>
             </li>
         </ul>
     @endforeach

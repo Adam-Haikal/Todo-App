@@ -1,5 +1,6 @@
 <x-nav.layout>
-    <div id="mainContent" class="relative">
+    <div id="mainContent"
+        class="relative">
         <x-slot:heading>
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-between">
@@ -24,11 +25,8 @@
                 </div>
 
                 {{-- Add new task button --}}
-                <a rel="stylesheet"
-                    id="showTaskButton"
-                    class="cursor-pointer">
-                    <x-list.plus-button class="mx-4" />
-                </a>
+                <x-list.plus-button class="mx-4"
+                    id="showTaskButton" />
             </div>
         </x-slot:heading>
 
@@ -66,23 +64,20 @@
                         @endforeach
                     </div>
 
-                    <form action="/"
-                        method="POST"
-                        class="my-3 mr-4 flex space-x-1">
-                        @csrf
-
+                    <div class="my-3 mr-4 flex space-x-1">
                         <x-list.edit-button />
                         <x-list.delete-button />
-                    </form>
-
+                    </div>
                 </li>
             </ul>
         @endforeach
     </div>
 
-    {{-- Add new task form --}}
+    {{-- Overlay and Add New Task form --}}
+    <div id="overlay"
+        class="z-1 fixed inset-0 hidden bg-black bg-opacity-50"></div>
     <div id="createTaskForm"
-        class="relative flex hidden justify-center">
+        class="z-2 relative flex hidden justify-center">
         <form action="{{ route('tasks.addTask', $list->id) }}"
             method="POST"
             class="absolute flex w-full max-w-7xl flex-col justify-between rounded-lg border border-gray-200 bg-gray-100 p-4 shadow">
@@ -92,19 +87,9 @@
                 <h1 class="text-xl font-bold text-gray-900">
                     Add New Task
                 </h1>
-                {{-- Close button --}}
-                <x-list.button id="closeFormButton"
-                    color="bg-red-500"
-                    class="shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">
-                    <x-list.button-icon stroke-width="1.5"
-                        stroke="white"
-                        fill="none">
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M6 18 18 6M6 6l12 12" />
-                    </x-list.button-icon>
-                </x-list.button>
 
+                {{-- Close button --}}
+                <x-list.close-button id="closeFormButton" />
             </div>
 
             <hr class="my-4">
@@ -121,18 +106,17 @@
                 id="description"
                 class="h-24 w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"></textarea>
 
+            {{-- Submit and Delete buttons --}}
             <div class="flex items-center gap-2">
-                <x-list.button color="bg-green-500"
-                    size="h-8 max-w-sm"
+                <x-list.button size="h-9 max-w-sm"
                     type="submit"
                     value="submit"
-                    class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1">Add</x-list.button>
+                    class="mt-4 flex items-center justify-center rounded-lg border border-transparent bg-green-500 px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1">Add</x-list.button>
 
-                <x-list.button color="bg-red-500"
-                    size="h-8 max-w-sm"
+                <x-list.button size="h-9 max-w-sm"
                     type="reset"
                     value="reset"
-                    class="mt-4 flex h-10 items-center justify-center rounded-lg border border-transparent px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">Delete</x-list.button>
+                    class="mt-4 flex items-center justify-center rounded-lg border border-transparent bg-red-500 px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">Delete</x-list.button>
             </div>
         </form>
     </div>
@@ -144,16 +128,22 @@
         const closeFormButton = document.getElementById('closeFormButton');
         const createTaskForm = document.getElementById('createTaskForm');
         const maiContent = document.getElementById('mainContent');
+        const overlay = document.getElementById('overlay');
 
-        // Show form when "Create New Task" button is clicked
-        showTaskButton.addEventListener('click', () => {
+        // Show form and everlay when "Create New Task" button is clicked
+        const showForm = () => {
             createTaskForm.classList.remove('hidden');
-            mainContent.classList.add('backdrop-blur-md');
-        });
-        // Hide form when "Close" button is clicked
-        closeFormButton.addEventListener('click', () => {
+            overlay.classList.remove('hidden');
+            mainContent.classList.add('blur-md');
+        };
+        // Hide form and overlay when clicking outside the form
+        const hideForm = () => {
             createTaskForm.classList.add('hidden');
-            mainContent.classList.remove('backdrop-blur-md');
-        });
+            overlay.classList.add('hidden');
+            mainContent.classList.remove('blur-md');
+        };
+        showTaskButton.addEventListener('click', showForm);
+        closeFormButton.addEventListener('click', hideForm);
+        overlay.addEventListener('click', hideForm);
     });
 </script>
