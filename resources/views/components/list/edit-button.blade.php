@@ -1,4 +1,4 @@
-<x-list.button color="bg-blue-600">
+<x-list.button {{ $attributes->merge(['class' => 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-700']) }}>
     <x-list.button-icon fill="white">
         <path
             d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
