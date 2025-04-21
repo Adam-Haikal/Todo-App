@@ -41,17 +41,28 @@
 
                 <hr class="my-4">
 
-                <label for="task_name">Task Name:</label>
-                <input type="text"
-                    name="task_name"
-                    id="task_name"
-                    class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                    required>
+                <div class="flex items-start gap-2">
+                    {{-- Mark task as completed: --}}
+                    <x-list.checkbox id="is_completed"
+                        name="is_completed"
+                        class="mt-6"
+                        value=1 />
 
-                <label for="description">Description:</label>
-                <textarea name="description"
-                    id="description"
-                    class="h-24 max-h-64 w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"></textarea>
+                    <div class="flex w-full flex-col">
+                        <label for="task_name">Task Name:</label>
+                        <input type="text"
+                            name="task_name"
+                            id="task_name"
+                            class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                            required>
+
+                        <label for="description">Description:</label>
+                        <textarea name="description"
+                            id="description"
+                            class="h-24 max-h-64 w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
 
                 {{-- Submit and Delete buttons --}}
                 <div class="flex items-center gap-2">
@@ -80,7 +91,8 @@
             <ul class="rounded-lg border border-gray-200 bg-white shadow">
                 <li class="flex w-full items-center rounded-t-lg border-b border-gray-600 ps-3 dark:border-gray-200">
 
-                    <x-list.checkbox :task="$task" />
+                    <x-list.checkbox id="{{ $task['id'] }}"
+                        is_completed="{{ $task['is_completed'] }}" />
 
                     {{-- Task content --}}
                     <div class="mx-2 ms-2 flex w-full flex-col py-1">

@@ -12,6 +12,10 @@ class Task extends Model
     // Change table name todos_app to task_listings
     protected $table = 'task_listings';
 
+    protected $casts = [
+        'is_completed' => 'boolean',
+    ];
+    
     protected $fillable = [
         'list_task_id',
         'task_name',

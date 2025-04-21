@@ -14,7 +14,8 @@ class TaskController extends Controller {
     }
 
     public function show($id) {
-        $list = ListTask::findOrFail($id);
+        // $list = ListTask::findOrFail($id);
+        $list = ListTask::with('tasks')->findOrFail($id);
         $task = $list->tasks;
 
         return view('tasks.show', ['tasks' => $task, 'list' => $list]);
@@ -42,11 +43,21 @@ class TaskController extends Controller {
         // return redirect('tasks.index');
         return redirect()->route('tasks.index')->with('success', 'List and task created successfully!');
     }
+    public function update(Request $request, $id) {
+    }
+
+    public function destroy($id) {
+        $list = ListTask::findOrFail($id);
+        $list->delete();
+
+        return redirect()->route('tasks.index')->with('success', 'List deleted successfully.');
+    }
 
     public function addTask(Request $request, $id) {
         $request->validate([
             'task_name' => 'required',
             'description' => 'nullable',
+            'is_completed' => 'nullable|boolean'
         ]);
 
         $list = ListTask::findOrFail($id);
@@ -55,6 +66,7 @@ class TaskController extends Controller {
         $list->tasks()->create([
             'task_name' => $request->input('task_name'),
             'description' => $request->input('description'),
+            'is_completed' => $request->has('is_completed') ? true : false
         ]);
         return redirect()->route('tasks.show', $id)->with('success', 'Task added successfully.');
     }

@@ -37,10 +37,7 @@
 
             <hr class="my-4">
 
-            {{-- <div class="w-4 min-w-6">
-                <input type="checkbox"
-                    class="mr-4 h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-1 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700">
-            </div> --}}
+            {{-- Task name and description --}}
             <label for="task_name">Task Name:</label>
             <input type="text"
                 name="task_name"
@@ -55,15 +52,15 @@
 
             {{-- Submit and Delete buttons --}}
             <div class="flex items-center gap-2">
-                <x-list.button size="h-9 max-w-sm"
-                    type="submit"
+                <x-list.button type="submit"
                     value="submit"
-                    class="mt-4 flex items-center justify-center rounded-lg border border-transparent bg-green-500 px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1">Add</x-list.button>
+                    size="h-9 max-w-sm"
+                    class="mt-4 h-9 max-w-sm border border-transparent bg-green-500 px-4 font-medium text-white hover:bg-gray-300 focus:ring-green-500">Add</x-list.button>
 
-                <x-list.button size="h-9 max-w-sm"
-                    type="reset"
+                <x-list.button type="reset"
                     value="reset"
-                    class="mt-4 flex items-center justify-center rounded-lg border border-transparent bg-red-500 px-4 font-medium text-white shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1">Delete</x-list.button>
+                    size="h-9 max-w-sm"
+                    class="mt-4 h-9 max-w-sm border border-transparent bg-red-500 px-4 font-medium text-white hover:bg-gray-300 focus:ring-red-500">Delete</x-list.button>
             </div>
         </form>
     </div>
@@ -78,6 +75,9 @@
     @foreach ($lists as $list)
         <ul class="rounded-lg border border-gray-200 bg-white ps-3 shadow">
             <li class="flex w-full items-center rounded-t-lg border-b border-gray-600 ps-3 dark:border-gray-200">
+
+                <x-list.checkbox id="{{ $list['id'] }}"
+                    is_completed="{{ $list['is_completed'] }}" />
 
                 <a href="/tasks/{{ $list['id'] }}"
                     class="mx-2 ms-2 flex w-full flex-col py-1">
@@ -95,6 +95,14 @@
                 <div class="my-3 mr-4 flex space-x-1">
                     <x-list.edit-button />
                     <x-list.delete-button />
+                    {{-- Delete button --}}
+                    {{-- <form action="{{ route('tasks.destroy', $list->id) }}"
+                        method="POST"
+                        onsubmit="return confirm('Are you sure you want to delete this list?');">
+                        @csrf
+                        @method('DELETE')
+                        <x-list.delete-button type="submit" />
+                    </form> --}}
                 </div>
             </li>
         </ul>
