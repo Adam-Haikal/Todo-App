@@ -15,10 +15,10 @@
     <div id="overlay"
         class="fixed inset-0 z-40 hidden bg-black bg-opacity-50 backdrop-blur-sm"></div>
     <div id="createForm"
-        class="relative z-50 flex hidden justify-center">
+        class="fixed w-full md:max-w-7xl max-w-md top-1/2 left-1/2 z-50 hidden flex -translate-x-1/2 -translate-y-1/2 items-center justify-center">
         <form action="{{ route('tasks.store') }}"
             method="POST"
-            class="absolute flex w-full max-w-7xl flex-col justify-between rounded-lg border border-gray-200 bg-gray-100 p-4 shadow">
+            class="relative flex w-full max-w-7xl flex-col justify-between rounded-lg border border-gray-200 bg-gray-100 p-4 shadow">
             @csrf
 
             <div class="flex items-center justify-between">
@@ -42,8 +42,7 @@
             <input type="text"
                 name="task_name"
                 id="task_name"
-                class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                required>
+                class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500">
 
             <label for="description">Description:</label>
             <textarea name="description"
@@ -72,9 +71,12 @@
             class="text-blue-500 hover:underline">Create a new list</a>
     @endif
 
+
+
     @foreach ($lists as $list)
         <ul class="rounded-lg border border-gray-200 bg-white ps-3 shadow">
-            <li class="flex w-full items-center rounded-t-lg border-b border-gray-600 ps-3 dark:border-gray-200">
+            <li class="flex w-full items-center rounded-t-lg border-b border-gray-200 ps-2">
+
 
                 <x-list.checkbox id="{{ $list['id'] }}"
                     is_completed="{{ $list['is_completed'] }}" />
@@ -94,15 +96,9 @@
 
                 <div class="my-3 mr-4 flex space-x-1">
                     <x-list.edit-button />
-                    <x-list.delete-button />
-                    {{-- Delete button --}}
-                    {{-- <form action="{{ route('tasks.destroy', $list->id) }}"
-                        method="POST"
-                        onsubmit="return confirm('Are you sure you want to delete this list?');">
-                        @csrf
-                        @method('DELETE')
-                        <x-list.delete-button type="submit" />
-                    </form> --}}
+                    {{-- <x-list.delete-button /> --}}
+
+
                 </div>
             </li>
         </ul>
