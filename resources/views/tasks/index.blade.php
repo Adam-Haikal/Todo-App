@@ -1,136 +1,111 @@
 <x-nav.layout>
     <x-slot:heading>
         {{-- Heading --}}
-        <div class="flex items-center justify-between text-2xl font-bold">
+        <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold text-gray-900">
                 Lists
             </h1>
 
             {{-- Add new list button --}}
             <x-list.plus-button class="mx-4"
-                id="showFormButton" />
+                id="showFormButton"
+                name="showFormButton" />
         </div>
     </x-slot:heading>
 
+    {{-- Overlay and Add List forms --}}
     <div id="overlay"
         class="fixed inset-0 z-40 hidden bg-black bg-opacity-50 backdrop-blur-sm"></div>
-    <div id="createForm"
-        class="fixed w-full md:max-w-7xl max-w-md top-1/2 left-1/2 z-50 hidden flex -translate-x-1/2 -translate-y-1/2 items-center justify-center">
-        <form action="{{ route('tasks.store') }}"
-            method="POST"
-            class="relative flex w-full max-w-7xl flex-col justify-between rounded-lg border border-gray-200 bg-gray-100 p-4 shadow">
-            @csrf
 
-            <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    <input type="text"
-                        name="list_name"
-                        placeholder="Untitled List"
-                        class="rounded border-transparent bg-gray-300 px-4 py-2 text-gray-700 placeholder-gray-600 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                        id="list"
-                        required>
-                </h1>
-
-                {{-- Close button --}}
-                <x-list.close-button id="closeFormButton" />
-            </div>
-
-            <hr class="my-4">
-
-            {{-- Task name and description --}}
-            <label for="task_name">Task Name:</label>
-            <input type="text"
-                name="task_name"
-                id="task_name"
-                class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500">
-
-            <label for="description">Description:</label>
-            <textarea name="description"
-                id="description"
-                class="h-24 max-h-64 w-full rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"></textarea>
-
-            {{-- Submit and Delete buttons --}}
-            <div class="flex items-center gap-2">
-                <x-list.button type="submit"
-                    value="submit"
-                    size="h-9 max-w-sm"
-                    class="mt-4 h-9 max-w-sm border border-transparent bg-green-500 px-4 font-medium text-white hover:bg-gray-300 focus:ring-green-500">Add</x-list.button>
-
-                <x-list.button type="reset"
-                    value="reset"
-                    size="h-9 max-w-sm"
-                    class="mt-4 h-9 max-w-sm border border-transparent bg-red-500 px-4 font-medium text-white hover:bg-gray-300 focus:ring-red-500">Delete</x-list.button>
-            </div>
-        </form>
+    <div
+        class="fixed left-1/2 top-1/2 z-50 flex w-full max-w-md -translate-x-1/2 -translate-y-1/2 items-center justify-center md:max-w-7xl">
+        @include('tasks.create-list-form')
+        @include('tasks.update-list-form')
     </div>
 
     @if ($lists->count() == 0)
         <p>No lists created</p>
 
-        <a href={{ route('tasks.create') }}
-            class="text-blue-500 hover:underline">Create a new list</a>
+        <span name="showFormButton"
+            class="cursor-pointer text-blue-500 hover:underline">Create a new list
+        </span>
     @endif
 
+    {{-- Delete button --}}
+    <form action=""
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to delete the selected lists?');">
+        @csrf
+        @method('DELETE')
 
+        {{-- Button to toggle the visibility of checkboxes and delete button --}}
+        @if ($lists->count() > 0)
+            <div class="my-2 flex items-center">
+                <button type="button"
+                    id="ShowDeleteModeButton"
+                    class="h-9 rounded-lg bg-red-600 px-4 text-white hover:bg-red-700 focus:ring-red-700">
+                    Delete List
+                </button>
 
-    @foreach ($lists as $list)
-        <ul class="rounded-lg border border-gray-200 bg-white ps-3 shadow">
-            <li class="flex w-full items-center rounded-t-lg border-b border-gray-200 ps-2">
+                {{-- Button to enable checkbox to delete multiple lists --}}
+                <x-list.delete-button type="submit"
+                    id="deleteButton"
+                    class="hidden rounded-l-lg rounded-r-none" />
+                <x-list.close-button id="closeDeleteModeButton"
+                    class="hidden h-9 w-9 rounded-l-none rounded-r-lg bg-gray-400 text-white hover:bg-gray-500 focus:ring-gray-700" />
+            </div>
+        @endif
 
+        @foreach ($lists as $list)
+            <div class="flex items-center">
 
-                <x-list.checkbox id="{{ $list['id'] }}"
-                    is_completed="{{ $list['is_completed'] }}" />
+                {{-- Checkbox for selecting multiple tasks for delete --}}
+                <input type="checkbox"
+                    name="delete_list_ids[]"
+                    class="mx-2 hidden h-5 w-5 border-gray-300 text-red-600 focus:ring-red-500"
+                    value="{{ $list['id'] }}">
 
-                <a href="/tasks/{{ $list['id'] }}"
-                    class="mx-2 ms-2 flex w-full flex-col py-1">
-                    <div class="text-lg font-bold text-blue-500 hover:underline">
-                        {{ $list['list_name'] }}
+                {{-- Display lists --}}
+                <ul class="w-full rounded-lg border border-gray-200 bg-white shadow">
+                    <li class="flex items-center rounded-t-lg border-b border-gray-200 ps-2">
 
-                        {{-- Display tasks count --}}
-                        ({{ $list->tasks->count() }})
-                    </div>
-                    <p class="text-sm font-normal text-gray-500">
-                        Last updated: {{ $list['updated_at'] }}
-                    </p>
-                </a>
+                        {{-- Checkbox for marking task as completed --}}
+                        {{-- <x-list.checkbox id="{{ $list['id'] }}"
+                            is_completed="{{ $list['is_completed'] }}"
+                            class="p-2"
+                            name="is_completed" /> --}}
 
-                <div class="my-3 mr-4 flex space-x-1">
-                    <x-list.edit-button />
-                    {{-- <x-list.delete-button /> --}}
+                        <a href="/tasks/{{ $list['id'] }}"
+                            class="mx-2 ms-2 flex w-full flex-col py-1">
+                            <div class="text-lg font-bold text-blue-500 hover:underline">
+                                {{ $list['list_name'] }}
 
+                                {{-- Display tasks count --}}
+                                ({{ $list->tasks->count() }})
+                            </div>
+                            <p class="text-sm font-normal text-gray-500">
+                                Last updated: {{ $list['updated_at'] }}
+                            </p>
+                        </a>
 
-                </div>
-            </li>
-        </ul>
-    @endforeach
-    <div class="mt-4">
+                        <div class="my-3 mr-4 flex space-x-1">
+                            <x-list.edit-button name="edit-button"
+                                data-list="{{ json_encode($list) }}" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        @endforeach
+
         {{-- Pagination --}}
-        {{ $lists->links() }}
-    </div>
+        <div class="mt-4">
+            {{ $lists->links() }}
+        </div>
+    </form>
+
+    {{-- Create Task form --}}
 </x-nav.layout>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const showFormButton = document.getElementById('showFormButton');
-        const closeFormButton = document.getElementById('closeFormButton');
-        const createForm = document.getElementById('createForm');
-        const overlay = document.getElementById('overlay');
-        const body = document.body;
-
-        // Show form and everlay when "Create New Task" button is clicked
-        const showForm = () => {
-            createForm.classList.remove('hidden');
-            overlay.classList.remove('hidden');
-            body.classList.add('overflow-hidden'); // Prevent scrolling
-        };
-        // Hide form and overlay when clicking outside the form
-        const hideForm = () => {
-            createForm.classList.add('hidden');
-            overlay.classList.add('hidden');
-            body.classList.remove('overflow-hidden'); // Allow scrolling
-        };
-        showFormButton.addEventListener('click', showForm);
-        closeFormButton.addEventListener('click', hideForm);
-        overlay.addEventListener('click', hideForm);
-    });
-</script>
+<script src="{{ asset('js/toggleForm.js') }}"></script>
+<script src="{{ asset('js/updateList.js') }}"></script>
+<script src="{{ asset('js/toggleDeleteButton.js') }}"></script>

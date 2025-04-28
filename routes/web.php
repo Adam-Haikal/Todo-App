@@ -4,11 +4,13 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+Route::post('/tasks', [TaskController::class, 'createList'])->name('tasks.createList');
+Route::put('/tasks/{id}', [TaskController::class, 'updateList'])->name('tasks.updateList');
+Route::delete('/tasks', [TaskController::class, 'destroyList'])->name('tasks.destroyList');
 Route::get('/tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
-Route::delete('/tasks', [TaskController::class, 'destroy'])->name('tasks.destroy');
-Route::post('/tasks/{id}/add', [TaskController::class, 'addTask'])->name('tasks.addTask');
-Route::delete('/tasks/{id}/delete', [TaskController::class, 'deleteTask'])->name('tasks.deleteTask');
+Route::post('/tasks/{id}/add', [TaskController::class, 'createTask'])->name('tasks.createTask');
+Route::put('/tasks/{id}', [TaskController::class, 'updateTask'])->name('tasks.updateTask');
+Route::delete('/tasks/{id}/delete', [TaskController::class, 'destroyTask'])->name('tasks.destroyTask');
 
 
 Route::get('/important', function () {

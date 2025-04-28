@@ -10,7 +10,8 @@ class ListTask extends Model
     use HasFactory;
 
     protected $fillable = [
-        'list_name'
+        'list_name',
+        'is_completed',
     ];
 
     //List can have many tasks
