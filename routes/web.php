@@ -1,17 +1,22 @@
 <?php
 
-use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ListController;
+use App\Http\Controllers\TaskController;
 
-Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-Route::post('/tasks', [TaskController::class, 'createList'])->name('tasks.createList');
-Route::put('/tasks/{id}', [TaskController::class, 'updateList'])->name('tasks.updateList');
-Route::delete('/tasks', [TaskController::class, 'destroyList'])->name('tasks.destroyList');
-Route::get('/tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
-Route::post('/tasks/{id}/add', [TaskController::class, 'createTask'])->name('tasks.createTask');
-Route::put('/tasks/{id}', [TaskController::class, 'updateTask'])->name('tasks.updateTask');
-Route::delete('/tasks/{id}/delete', [TaskController::class, 'destroyTask'])->name('tasks.destroyTask');
+Route::prefix("lists")->group(function () {
+    Route::get('/', [ListController::class, 'index'])->name('lists.index');
+    Route::post('/', [ListController::class, 'create'])->name('lists.create');
+    Route::put('/{id}', [ListController::class, 'update'])->name('lists.update');
+    Route::delete('/', [ListController::class, 'destroy'])->name('lists.destroy');
+});
 
+Route::prefix("tasks")->group(function () {
+    Route::get('/{id}', [TaskController::class, 'index'])->name('tasks.index'); // Show a specific list with its tasks
+    Route::post('/{id}', [TaskController::class, 'create'])->name('tasks.create');
+    Route::put('/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+});
 
 Route::get('/important', function () {
     return view('important');

@@ -18,12 +18,16 @@
 
     <hr class="my-4">
 
+    <input type="hidden"
+        name="list_id"
+        id="updateListId">
+
     <div class="flex w-full flex-col">
         <label for="task_name">List Name</label>
         <input type="text"
             name="list_name"
             id="updateListName"
-            value="{{ $list->list_name  ?? ''}}"
+            {{-- value="{{ $list->list_name ?? '' }}" --}}
             class="mb-2 h-10 w-1/2 rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             placeholder="Enter List Name"
             required>

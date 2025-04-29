@@ -19,7 +19,7 @@
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
                                 {{-- Logo --}}
-                                <a href="{{ route('tasks.index') }}"
+                                <a href="{{ route('lists.index') }}"
                                     class="h-8 w-8"
                                     alt="To-Do-List">
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -38,8 +38,8 @@
                             <div class="hidden md:block">
                                 <div class="ml-10 flex items-baseline space-x-4">
                                     <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                                    <x-nav.nav-link href="/tasks"
-                                        :active="request()->is(['tasks', 'tasks/*'])">Tasks</x-nav.nav-link>
+                                    <x-nav.nav-link href="/lists"
+                                        :active="request()->is(['lists', 'lists/*'])">Lists</x-nav.nav-link>
                                     <x-nav.nav-link href="/important"
                                         :active="request()->is('important')">Important</x-nav.nav-link>
                                     <x-nav.nav-link href="/planned"
@@ -152,9 +152,9 @@
                     id="mobile-menu">
                     <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                        <a href="/tasks"
-                            class="{{ request()->is(['tasks', 'tasks/*']) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} block rounded-md px-3 py-2 text-base font-medium"
-                            aria-current="page">Tasks</a>
+                        <a href="/lists"
+                            class="{{ request()->is(['lists', 'lists/*']) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} block rounded-md px-3 py-2 text-base font-medium"
+                            aria-current="page">List</a>
                         <a href="/important"
                             class="{{ request()->is('important') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} block rounded-md px-3 py-2 text-base font-medium">Important</a>
                         <a href="/planned"

@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const editButtons = document.querySelectorAll('[name="edit-button"]'); // Edit buttons
     const updateForm = document.getElementById("updateForm");
     const listNameField = document.getElementById("updateListName");
-    
+    const listIdField = document.getElementById("updateListId");
+
     const closeUpdateFormButton = document.getElementById("closeUpdateFormButton");
     const overlay = document.getElementById("overlay");
 
@@ -10,10 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     editButtons.forEach((button) => {
         button.addEventListener("click", () => {
             const list = JSON.parse(button.getAttribute("data-list"));
+            // console.log("Edit button clicked for list:", list);
 
             // Populate the update form with list data
             listNameField.value = list.list_name;
-            updateForm.action = `/tasks/${list.id}`;
+            listIdField.value = list.id;
+            updateForm.action = `/lists/${list.id}`; // Update the form action URL
 
             // Show the form and overlay
             updateForm.classList.remove("hidden");

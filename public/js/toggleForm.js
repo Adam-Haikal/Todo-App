@@ -3,16 +3,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create Form Elements
     const createForm = document.getElementById("createForm");
-    const showCreateFormButton = document.getElementById("showFormButton"); // Button to show create form
+    const showCreateFormButton = document.querySelectorAll(
+        '[name="showFormButtons"]'
+    ); // Button to show create form
     const closeCreateFormButton = document.getElementById(
         "closeCreateFormButton"
     ); // Close button for create form
 
     // Show Create Form
     if (showCreateFormButton) {
-        showCreateFormButton.addEventListener("click", () => {
-            createForm.classList.remove("hidden");
-            overlay.classList.remove("hidden");
+        showCreateFormButton.forEach((button) => {
+            button.addEventListener("click", () => {
+                createForm.classList.remove("hidden");
+                overlay.classList.remove("hidden");
+            });
         });
     }
 

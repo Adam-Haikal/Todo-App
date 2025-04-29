@@ -1,4 +1,4 @@
-<form action="{{ route('tasks.updateTask', ['id' => $list->id]) }}"
+<form action="{{ route('tasks.update', ['id' => $list->id]) }}"
     id="updateForm"
     method="POST"
     class="relative flex hidden w-full max-w-7xl flex-col justify-between rounded-lg border border-gray-200 bg-gray-100 p-4 shadow">
