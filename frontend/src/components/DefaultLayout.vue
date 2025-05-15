@@ -74,6 +74,7 @@ function logout() {
               <!-- Profile dropdown -->
               <Menu as="div" class="relative ml-3">
                 <div>
+                  <!-- User Icon -->
                   <MenuButton
                     class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                     <span class="absolute -inset-1.5" />

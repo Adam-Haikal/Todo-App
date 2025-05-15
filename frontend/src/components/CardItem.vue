@@ -1,4 +1,17 @@
 <script setup>
+import {
+  Disclosure,
+  DisclosureButton,
+  Menu,
+  MenuButton,
+  MenuItems,
+  MenuItem,
+} from "@headlessui/vue";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/vue/24/outline";
 import { computed } from "vue";
 
 defineProps({
@@ -44,13 +57,50 @@ const truncatedText = computed(() => {
       </p>
     </div>
 
-    <span
-      class="inline-flex items-center rounded-full bg-red-600 px-2 py-1 text-xs font-medium text-white">
-      X
-    </span>
-    <span
-      class="inline-flex items-center rounded-full bg-blue-600 px-2 py-1 text-xs font-medium text-white">
-      Edit
-    </span>
+    <div class="hidden md:block">
+      <div class="ml-4 flex items-center md:ml-6">
+        <!-- Dropdown menu button for Edit & Delete -->
+        <Menu as="div" class="relative ml-3">
+          <div>
+            <!-- Ellipsis Vertical Icon -->
+            <MenuButton
+              class="relative flex max-w-xs items-center rounded-full focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+              <span class="absolute -inset-1.5" />
+              <EllipsisVerticalIcon class="block size-6" aria-hidden="true" />
+            </MenuButton>
+          </div>
+          <transition
+            enter-active-class="transition ease-out duration-100"
+            enter-from-class="transform opacity-0 scale-95"
+            enter-to-class="transform opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-75"
+            leave-from-class="transform opacity-100 scale-100"
+            leave-to-class="transform opacity-0 scale-95">
+            <!-- Dropdown menu items -->
+            <MenuItems
+              class="absolute right-0 z-10 mt-0 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
+              <MenuItem v-slot="{ active }" @click="handleEdit">
+                <h2
+                  :class="[
+                    active ? 'bg-gray-100 outline-hidden' : '',
+                    'block px-4 py-2 text-sm text-gray-700',
+                  ]">
+                  Edit
+                </h2>
+              </MenuItem>
+              <MenuItem v-slot="{ active }" @click="handleDelete">
+                <h2
+                  :class="[
+                    active ? 'bg-gray-100 outline-hidden' : '',
+                    'block px-4 py-2 text-sm text-gray-700',
+                  ]">
+                  Delete
+                </h2>
+              </MenuItem>
+            </MenuItems>
+          </transition>
+        </Menu>
+      </div>
+    </div>
   </div>
 </template>
