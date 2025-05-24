@@ -5,15 +5,25 @@ import {
   DisclosurePanel,
   MenuItem,
 } from "@headlessui/vue";
-import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ClipboardDocumentListIcon,
+} from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 
+<<<<<<< Updated upstream
 const user = {
   name: "Tom Cook",
   email: "tom@example.com",
   imageUrl:
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
+=======
+const userStore = useUserStore();
+// const user = computed(() => userStore.user);
+
+>>>>>>> Stashed changes
 const navigation = [
   { name: "Lists", to: { name: "Lists" }, current: true },
   { name: "Important", to: { name: "Important" }, current: false },
@@ -22,9 +32,15 @@ const navigation = [
   { name: "Flagged", to: { name: "Flagged" }, current: false },
 ];
 const userNavigation = [
+<<<<<<< Updated upstream
   { name: "Your Profile", to: { name: "Lists" } },
   { name: "Settings", to: { name: "Lists" } },
   { name: "Logout", to: { name: "Login" }, onClick: logout },
+=======
+  { name: "Your Profile", to: { name: "Tasks" } },
+  { name: "Settings", to: { name: "Tasks" } },
+  { name: "Logout", onClick: userStore.logout },
+>>>>>>> Stashed changes
 ];
 function logout() {
   console.log("logout");
@@ -39,10 +55,9 @@ function logout() {
           <div class="flex items-center">
             <!-- Logo -->
             <div class="shrink-0">
-              <img
-                class="size-8"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                alt="Your Company" />
+              <ClipboardDocumentListIcon
+                class="size-8 text-indigo-500"
+                alt="TodoApp" />
             </div>
 
             <!-- Navigation links -->
@@ -72,7 +87,12 @@ function logout() {
             <!-- User Icon -->
             <template #menuIcon>
               <span class="sr-only">Open user menu</span>
+<<<<<<< Updated upstream
               <img class="size-8 rounded-full" :src="user.imageUrl" alt="" />
+=======
+              <!-- <img class="size-8 rounded-full" :src="userStore.user.imageUrl" alt="" /> -->
+              <span class="text-white ml-2">{{ userStore.user?.name }}</span>
+>>>>>>> Stashed changes
             </template>
 
             <!-- Dropdown menu items -->
@@ -128,14 +148,18 @@ function logout() {
         <div class="border-t border-gray-700 pt-4 pb-3">
           <div class="flex items-center px-5">
             <div class="shrink-0">
+<<<<<<< Updated upstream
               <img class="size-10 rounded-full" :src="user.imageUrl" alt="" />
+=======
+              <!-- <img class="size-10 rounded-full" :src="userStore.user?.imageUrl" alt="" /> -->
+>>>>>>> Stashed changes
             </div>
             <div class="ml-3">
               <div class="text-base/5 font-medium text-white">
-                {{ user.name }}
+                {{ userStore.user?.name }}
               </div>
               <div class="text-sm font-medium text-gray-400">
-                {{ user.email }}
+                {{ userStore.user?.email }}
               </div>
             </div>
           </div>

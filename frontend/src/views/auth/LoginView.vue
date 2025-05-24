@@ -5,7 +5,7 @@ import Button from "@/components/Button.vue";
 </script>
 
 <template>
-  <GuestLayout>
+  <div>
     <h2
       class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
       Sign in to your account
@@ -30,5 +30,5 @@ import Button from "@/components/Button.vue";
         <Button type="submit">Login</Button>
       </form>
     </div>
-  </GuestLayout>
+  </div>
 </template>

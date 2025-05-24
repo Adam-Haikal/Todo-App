@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DefaultLayout from "@/components/DefaultLayout.vue";
+import GuestLayout from "@/components/GuestLayout.vue";
 import NotFound from "@/views/NotFound.vue";
 import HomeView from "@/views/HomeView.vue";
 import ListsView from "@/views/ListsView.vue";
@@ -17,9 +18,15 @@ const router = createRouter({
     {
       path: "/",
       component: DefaultLayout,
+      meta: { requiresAuth: true },
       children: [
         { path: "/", name: "Home", component: HomeView },
+<<<<<<< Updated upstream
         { path: "/lists", name: "Lists", component: ListsView },
+=======
+        { path: "/tasks", name: "Tasks", component: TasksView },
+        { path: "/tasks/:id", name: "SubTasks", component: SubTasksView },
+>>>>>>> Stashed changes
         { path: "/important", name: "Important", component: ImportantView },
         { path: "/planned", name: "Planned", component: PlannedView },
         { path: "/assigned", name: "Assigned", component: AssignedView },
@@ -27,15 +34,15 @@ const router = createRouter({
       ],
     },
     {
-      path: "/login",
-      name: "Login",
-      component: LoginView,
+      path: "/",
+      component: GuestLayout,
+      meta: { requiresGuest: true },
+      children: [
+        { path: "/login", name: "Login", component: LoginView },
+        { path: "/register", name: "Register", component: RegisterView },
+      ],
     },
-    {
-      path: "/register",
-      name: "Register",
-      component: RegisterView,
-    },
+
     {
       path: "/forgetPassword",
       name: "ForgotPassword",
@@ -48,5 +55,28 @@ const router = createRouter({
     },
   ],
 });
+
+// router.beforeEach((to, from, next) => {
+//   const userStore = useUserStore();
+//   // Check if the route requires authentication
+//   // and if the user is not logged in, redirect to login
+//   if (
+//     to.matched.some((record) => record.meta.requiresAuth) &&
+//     !userStore.isLoggedIn
+//   ) {
+//     // userStore.isLoggedIn = false;
+//     next({ name: "Login" });
+//   }
+//   // If the route requires guest access and the user is logged in, redirect to tasks
+//   else if (
+//     to.matched.some((record) => record.meta.requiresGuest) &&
+//     userStore.isLoggedIn
+//   ) {
+//     // userStore.isLoggedIn = true;
+//     next({ name: "Tasks" });
+//   }
+//   // Otherwise, proceed to the route
+//   else next();
+// });
 
 export default router;

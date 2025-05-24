@@ -1,0 +1,69 @@
+import { defineStore } from "pinia";
+import axiosClient from "@/axios";
+
+export const useTaskStore = defineStore("task", {
+  state: () => ({
+    tasks: [],
+  }),
+
+  getters: {
+    // task exists
+    hasTasks: (state) => state.tasks && state.tasks.length > 0,
+    // Get completed tasks
+    completedTasks: (state) => state.tasks.filter((task) => task.completed),
+    // Get pending tasks
+    pendingTasks: (state) => state.tasks.filter((task) => !task.completed),
+  },
+
+  actions: {
+    // Fetch tasks from the API
+    async getTasks() {
+      try {
+        const response = await axiosClient.get("/api/tasks");
+        this.tasks = response.data;
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    },
+    // create a new task
+    async createTask(task) {
+      try {
+        const response = await axiosClient.post("/api/tasks", task);
+        this.tasks.push(response.data);
+        // this.tasks.push(response.data.task);
+      } catch (error) {
+        console.error("Error creating task:", error);
+      }
+    },
+    // update a task
+    // async updateTask(task) {
+    //   try {
+    //     const response = await axiosClient.put(`/api/tasks/${task.id}`, task);
+    //     this.tasks.push(response.data);
+    //     // this.tasks.push(response.data.task);
+
+    //     // const index = this.tasks.findIndex((t) => t.id === task.id);
+    //     // if (index !== -1) {
+    //     //   this.tasks.splice(index, 1, response.data);
+    //     // }
+    //   } catch (error) {
+    //     console.error("Error updating task:", error);
+    //   }
+    // },
+
+    // delete a task
+    async deleteTask(id) {
+      try {
+        await axiosClient.delete(`/api/tasks/${id}`);
+        this.tasks = this.tasks.filter((task) => task.id !== id); // Remove the deleted task from the local state
+
+        // const index = this.tasks.findIndex((t) => t.id === id);
+        // if (index !== -1) {
+        //   this.tasks.splice(index, 1);
+        // }
+      } catch (error) {
+        console.error("Error deleting task:", error);
+      }
+    },
+  },
+});
