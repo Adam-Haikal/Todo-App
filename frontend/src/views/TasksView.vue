@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useTaskStore } from "@/stores/task";
 import CardItem from "@/components/CardItem.vue";
@@ -9,18 +9,7 @@ import { PlusIcon } from "@heroicons/vue/24/outline";
 // Import the task store
 const taskStore = useTaskStore();
 
-// const tasks = computed(() => taskStore.tasks);
 const taskData = ref({ task_name: "" });
-// const tasks = [
-//   {
-//     id: "1",
-//     task_name: "first",
-//   },
-//   {
-//     id: "2",
-//     task_name: "second",
-//   },
-// ];
 const showCreateForm = ref(false); // Show/hide create form
 
 onMounted(async () => {

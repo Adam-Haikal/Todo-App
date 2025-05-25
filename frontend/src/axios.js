@@ -1,5 +1,6 @@
 import axios from "axios";
 import router from "@/router";
+import { useUserStore } from "@/stores/user";
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -13,9 +14,9 @@ axiosClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
     const userStore = useUserStore();
-    switch (error.response.status) {
+    switch (error.response && error.response.status) {
       case 401:
         // Handle authentication errors
         userStore.clearUser();

@@ -11,13 +11,7 @@ import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
         alt="TodoApp" />
     </div>
 
-<<<<<<< Updated upstream
-    <!-- {{ inputValue }} -->
-
-    <slot />
-=======
     <!-- <slot /> -->
     <RouterView />
->>>>>>> Stashed changes
   </div>
 </template>

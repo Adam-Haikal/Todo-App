@@ -1,7 +1,17 @@
 <script setup>
-import GuestLayout from "@/components/GuestLayout.vue";
+import { useUserStore } from "@/stores/user";
+import { ref } from "vue";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
+
+const userStore = useUserStore();
+userStore.clearErrors();
+const formData = ref({
+  name: "",
+  email: "",
+  password: "",
+  password_confirmation: "",
+});
 </script>
 
 <template>
@@ -12,16 +22,24 @@ import Button from "@/components/Button.vue";
     </h2>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form
-        class="space-y-4"
-        action="#"
-        method="POST"
-        @submit.prevent="register">
+      <!-- loop through all the errors from userStore and display errors -->
+      <div v-if="userStore.hasErrors">
+        <ul class="text-red-600 bg-red-100 p-4 rounded-md my-2">
+          <li v-for="(error, index) in userStore.errors" :key="index">
+            <p v-for="(message, i) in error" :key="i">-{{ message }}</p>
+          </li>
+        </ul>
+      </div>
+
+      <form class="space-y-4" @submit.prevent="userStore.register(formData)">
         <div>
-          <Input input-type="name" required />
-          <Input input-type="email" required />
-          <Input input-type="password" required />
-          <Input input-type="password-confirmation" required />
+          <Input input-type="name" required v-model="formData.name" />
+          <Input input-type="email" required v-model="formData.email" />
+          <Input input-type="password" required v-model="formData.password" />
+          <Input
+            input-type="password-confirmation"
+            required
+            v-model="formData.password_confirmation" />
         </div>
 
         <p class="mt-4 text-center text-sm/6 text-gray-500">

@@ -3,7 +3,8 @@ import DefaultLayout from "@/components/DefaultLayout.vue";
 import GuestLayout from "@/components/GuestLayout.vue";
 import NotFound from "@/views/NotFound.vue";
 import HomeView from "@/views/HomeView.vue";
-import ListsView from "@/views/ListsView.vue";
+import TasksView from "@/views/TasksView.vue";
+import SubTasksView from "@/views/SubTasksView.vue";
 import ForgotPassword from "@/views/auth/ForgotPassword.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
 import LoginView from "@/views/auth/LoginView.vue";
@@ -11,6 +12,7 @@ import ImportantView from "@/views/ImportantView.vue";
 import PlannedView from "@/views/PlannedView.vue";
 import AssignedView from "@/views/AssignedView.vue";
 import FlaggedView from "@/views/FlaggedView.vue";
+import { useUserStore } from "@/stores/user";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,17 +23,22 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         { path: "/", name: "Home", component: HomeView },
-<<<<<<< Updated upstream
-        { path: "/lists", name: "Lists", component: ListsView },
-=======
         { path: "/tasks", name: "Tasks", component: TasksView },
         { path: "/tasks/:id", name: "SubTasks", component: SubTasksView },
->>>>>>> Stashed changes
         { path: "/important", name: "Important", component: ImportantView },
         { path: "/planned", name: "Planned", component: PlannedView },
         { path: "/assigned", name: "Assigned", component: AssignedView },
         { path: "/flagged", name: "Flagged", component: FlaggedView },
       ],
+      beforeEnter: async (to, from, next) => {
+        try {
+          const userStore = useUserStore();
+          await userStore.fetchUser();
+          next();
+        } catch (error) {
+          next({ name: "Login" });
+        }
+      },
     },
     {
       path: "/",

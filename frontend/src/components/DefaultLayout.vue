@@ -1,50 +1,32 @@
 <script setup>
+import { useUserStore } from "@/stores/user";
+import DropdownMenu from "@/components/DropdownMenu.vue";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ClipboardDocumentListIcon,
+} from "@heroicons/vue/24/outline";
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
   MenuItem,
 } from "@headlessui/vue";
-import {
-  Bars3Icon,
-  XMarkIcon,
-  ClipboardDocumentListIcon,
-} from "@heroicons/vue/24/outline";
-import DropdownMenu from "@/components/DropdownMenu.vue";
 
-<<<<<<< Updated upstream
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
-=======
 const userStore = useUserStore();
-// const user = computed(() => userStore.user);
 
->>>>>>> Stashed changes
 const navigation = [
-  { name: "Lists", to: { name: "Lists" }, current: true },
+  { name: "Tasks", to: { name: "Tasks" }, current: true },
   { name: "Important", to: { name: "Important" }, current: false },
   { name: "Planned", to: { name: "Planned" }, current: false },
   { name: "Assigned", to: { name: "Assigned" }, current: false },
   { name: "Flagged", to: { name: "Flagged" }, current: false },
 ];
 const userNavigation = [
-<<<<<<< Updated upstream
-  { name: "Your Profile", to: { name: "Lists" } },
-  { name: "Settings", to: { name: "Lists" } },
-  { name: "Logout", to: { name: "Login" }, onClick: logout },
-=======
   { name: "Your Profile", to: { name: "Tasks" } },
   { name: "Settings", to: { name: "Tasks" } },
   { name: "Logout", onClick: userStore.logout },
->>>>>>> Stashed changes
 ];
-function logout() {
-  console.log("logout");
-}
 </script>
 
 <template>
@@ -87,20 +69,16 @@ function logout() {
             <!-- User Icon -->
             <template #menuIcon>
               <span class="sr-only">Open user menu</span>
-<<<<<<< Updated upstream
-              <img class="size-8 rounded-full" :src="user.imageUrl" alt="" />
-=======
               <!-- <img class="size-8 rounded-full" :src="userStore.user.imageUrl" alt="" /> -->
               <span class="text-white ml-2">{{ userStore.user?.name }}</span>
->>>>>>> Stashed changes
             </template>
 
             <!-- Dropdown menu items -->
-            <template #default>
-              <MenuItem
-                v-for="item in userNavigation"
-                :key="item.name"
-                v-slot="{ active }">
+            <MenuItem
+              v-for="item in userNavigation"
+              :key="item.name"
+              v-slot="{ active }">
+              <template v-if="item.to">
                 <RouterLink
                   :to="item.to"
                   :class="[
@@ -110,8 +88,15 @@ function logout() {
                   @click="item.onClick">
                   {{ item.name }}
                 </RouterLink>
-              </MenuItem>
-            </template>
+              </template>
+              <template v-else>
+                <div
+                  class="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                  @click="item.onClick">
+                  {{ item.name }}
+                </div>
+              </template>
+            </MenuItem>
           </DropdownMenu>
 
           <!-- Mobile menu button (X)-->
@@ -148,11 +133,7 @@ function logout() {
         <div class="border-t border-gray-700 pt-4 pb-3">
           <div class="flex items-center px-5">
             <div class="shrink-0">
-<<<<<<< Updated upstream
-              <img class="size-10 rounded-full" :src="user.imageUrl" alt="" />
-=======
               <!-- <img class="size-10 rounded-full" :src="userStore.user?.imageUrl" alt="" /> -->
->>>>>>> Stashed changes
             </div>
             <div class="ml-3">
               <div class="text-base/5 font-medium text-white">

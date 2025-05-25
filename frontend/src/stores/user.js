@@ -9,9 +9,22 @@ export const useUserStore = defineStore("user", {
     errors: {},
   }),
 
-  getters: {},
+  getters: {
+    hasErrors: (state) => {
+      return Object.keys(state.errors).length > 0;
+    },
+  },
 
   actions: {
+    clearUser() {
+      this.user = null;
+      this.isLoggedIn = false;
+    },
+
+    clearErrors() {
+      this.errors = {};
+    },
+
     async fetchUser() {
       try {
         const response = await axiosClient.get("/api/user");
@@ -20,10 +33,6 @@ export const useUserStore = defineStore("user", {
       } catch (error) {
         console.error("Error fetching user:", error);
       }
-    },
-    clearUser() {
-      this.user = null;
-      this.isLoggedIn = false;
     },
 
     async login(formData) {
