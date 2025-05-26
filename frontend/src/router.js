@@ -4,7 +4,7 @@ import GuestLayout from "@/components/GuestLayout.vue";
 import NotFound from "@/views/NotFound.vue";
 import HomeView from "@/views/HomeView.vue";
 import TasksView from "@/views/TasksView.vue";
-import SubTasksView from "@/views/SubTasksView.vue";
+import SubtasksView from "@/views/SubtasksView.vue";
 import ForgotPassword from "@/views/auth/ForgotPassword.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
 import LoginView from "@/views/auth/LoginView.vue";
@@ -24,7 +24,7 @@ const router = createRouter({
       children: [
         { path: "/", name: "Home", component: HomeView },
         { path: "/tasks", name: "Tasks", component: TasksView },
-        { path: "/tasks/:id", name: "SubTasks", component: SubTasksView },
+        { path: "/tasks/:id", name: "Subtasks", component: SubtasksView },
         { path: "/important", name: "Important", component: ImportantView },
         { path: "/planned", name: "Planned", component: PlannedView },
         { path: "/assigned", name: "Assigned", component: AssignedView },

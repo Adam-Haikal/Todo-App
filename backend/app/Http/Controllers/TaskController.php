@@ -38,12 +38,12 @@ class TaskController extends Controller
             'task_name' => 'required|string|max:255',
         ]);
 
-        Task::create([
+        $task = Task::create([
             'task_name' => $request->task_name,
         ]);
 
         // return response()->noContent();
-        return response()->json(['message' => 'Task created successfully'], 201);
+        return response()->json(['task' => $task, 'message' => 'Task created successfully'], 201);
     }
 
     /**

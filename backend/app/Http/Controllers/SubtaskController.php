@@ -37,12 +37,12 @@ class SubtaskController extends Controller
             'task_name' => 'required|string|max:255',
         ]);
 
-        Subtask::create([
+        $subtask = Subtask::create([
             'task_name' => $request->task_name,
         ]);
 
         // return response()->noContent();
-        return response()->json(['message' => 'Task created successfully'], 201);
+        return response()->json(['subtask' => $subtask, 'message' => 'Task created successfully'], 201);
     }
 
     /**

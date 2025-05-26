@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
+import router from "@/router";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -7,8 +8,7 @@ export const useTaskStore = defineStore("task", {
   }),
 
   getters: {
-    // task exists
-    hasTasks: (state) => state.tasks && state.tasks.length > 0,
+    hasTasks: (state) => state.tasks && state.tasks.length > 0, // task exists
     // Get completed tasks
     completedTasks: (state) => state.tasks.filter((task) => task.completed),
     // Get pending tasks
@@ -29,8 +29,11 @@ export const useTaskStore = defineStore("task", {
     async createTask(task) {
       try {
         const response = await axiosClient.post("/api/tasks", task);
-        this.tasks.push(response.data);
-        // this.tasks.push(response.data.task);
+
+        router.push({
+          name: "Subtasks",
+          params: { id: response.data.task.id },
+        });
       } catch (error) {
         console.error("Error creating task:", error);
       }
