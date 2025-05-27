@@ -33,7 +33,8 @@ axiosClient.interceptors.response.use(
         break;
       case 500:
         // Handle internal server errors
-        router.push({ name: "InternalServerError" });
+        // router.push({ name: "InternalServerError" });
+        console.error("Internal Server Error:", error.response.data);
         break;
       default:
         // Handle other errors

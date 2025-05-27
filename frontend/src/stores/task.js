@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
 import router from "@/router";
+import { useUserStore } from "@/stores/user";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -28,7 +29,13 @@ export const useTaskStore = defineStore("task", {
     // create a new task
     async createTask(task) {
       try {
-        const response = await axiosClient.post("/api/tasks", task);
+        const userStore = useUserStore();
+        const userId = userStore.user.id; // Get the user ID from the user store
+
+        const response = await axiosClient.post("/api/tasks", {
+          ...task,
+          user_id: userId,
+        });
 
         router.push({
           name: "Subtasks",
@@ -36,6 +43,12 @@ export const useTaskStore = defineStore("task", {
         });
       } catch (error) {
         console.error("Error creating task:", error);
+
+        if (error.response) {
+          console.error("Error response:", error.response);
+        } else {
+          console.error("Error:", error.message);
+        }
       }
     },
     // update a task

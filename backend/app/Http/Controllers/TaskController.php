@@ -13,17 +13,21 @@ class TaskController extends Controller
      */
     public function index()
     {
+        // Display tasks for specific user
+        $tasks = Task::where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
         // // Fetch all tasks with pagination
-        $tasks = Task::latest()
-            ->simplePaginate(15)
-            ->getCollection()
-            ->map(function ($task) {
-                return [
-                    'id' => $task->id,
-                    'task_name' => $task->task_name,
-                ];
-            });
-        // $tasks = Task::latest()->get();
+        // $tasks = Task::latest()
+        //     ->simplePaginate(15)
+        //     ->getCollection()
+        //     ->map(function ($task) {
+        //         return [
+        //             'id' => $task->id,
+        //             'task_name' => $task->task_name,
+        //         ];
+        //     });
 
         return response()->json($tasks);
         // $list = Task::latest()->simplePaginate(9);
@@ -40,6 +44,7 @@ class TaskController extends Controller
 
         $task = Task::create([
             'task_name' => $request->task_name,
+            'user_id' => $request->user_id,
         ]);
 
         // return response()->noContent();
