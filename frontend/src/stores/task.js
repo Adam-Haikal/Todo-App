@@ -30,42 +30,40 @@ export const useTaskStore = defineStore("task", {
     async createTask(task) {
       try {
         const userStore = useUserStore();
-        const userId = userStore.user.id; // Get the user ID from the user store
 
+        const userId = userStore.user.id; // Get the user ID from the user store
         const response = await axiosClient.post("/api/tasks", {
           ...task,
           user_id: userId,
         });
 
+        // Redirect to the subtasks view after creating a task
         router.push({
           name: "Subtasks",
           params: { id: response.data.task.id },
         });
       } catch (error) {
         console.error("Error creating task:", error);
-
-        if (error.response) {
-          console.error("Error response:", error.response);
-        } else {
-          console.error("Error:", error.message);
-        }
       }
     },
-    // update a task
-    // async updateTask(task) {
-    //   try {
-    //     const response = await axiosClient.put(`/api/tasks/${task.id}`, task);
-    //     this.tasks.push(response.data);
-    //     // this.tasks.push(response.data.task);
 
-    //     // const index = this.tasks.findIndex((t) => t.id === task.id);
-    //     // if (index !== -1) {
-    //     //   this.tasks.splice(index, 1, response.data);
-    //     // }
-    //   } catch (error) {
-    //     console.error("Error updating task:", error);
-    //   }
-    // },
+    // update a task
+    async updateTask(task) {
+      try {
+        console.log("Updating task:", task);
+
+        const response = await axiosClient.put(`/api/tasks/${task.id}`, task);
+        this.tasks.push(response.data);
+        // this.tasks.push(response.data.task);
+
+        const index = this.tasks.findIndex((t) => t.id === task.id);
+        if (index !== -1) {
+          this.tasks.splice(index, 1, response.data);
+        }
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    },
 
     // delete a task
     async deleteTask(id) {

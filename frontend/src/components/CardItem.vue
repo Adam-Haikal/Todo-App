@@ -3,6 +3,9 @@ import { Disclosure, DisclosureButton, MenuItem } from "@headlessui/vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import { defineProps, h } from "vue";
 import DropdownMenu from "@/components/DropdownMenu.vue";
+import { useTaskStore } from "@/stores/task";
+
+const taskStore = useTaskStore();
 
 const props = defineProps({
   tasksItem: {
@@ -41,9 +44,10 @@ const handleDelete = () => {
 
 <template>
   <div
-    class="bg-white h-15 rounded-lg p-4 border-2 border-gray-200 inline-flex items-center group gap-4 hover:bg-white/30 hover:cursor-pointer">
+    class="bg-white h-15 space-x-1 rounded-lg p-3 border-2 border-gray-200 hover:bg-white/30 flex items-center">
+    <!-- Checkbox for completed status -->
+    <!-- v-if="subTask" -->
     <button
-      v-if="subTask"
       type="button"
       name="completedButton"
       id="completedButton"
@@ -51,19 +55,22 @@ const handleDelete = () => {
         isCompleted
           ? 'bg-green-500 border-green-600'
           : 'bg-gray-100 border-gray-300',
-        'h-5 w-5 p-2 rounded-full border-2  appearance-none',
+        'h-5 w-5 rounded-full border-2 appearance-none',
       ]" />
 
-    <div class="w-full">
+    <!-- Task content -->
+    <section class="w-full">
       <!-- Only display if it is task -->
-      <div v-if="!subTask" class="space-y-1">
-        <p
-          class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
-          {{ tasksItem.task_name }}
-        </p>
-        <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
-          Last updated: {{ formattedDate }}
-        </p>
+      <div v-if="!subTask">
+        <router-link :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
+          <p
+            class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
+            {{ tasksItem.task_name }}
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
+            Last updated: {{ formattedDate }}
+          </p>
+        </router-link>
       </div>
 
       <!-- Only display subtask info if it exists -->
@@ -73,10 +80,10 @@ const handleDelete = () => {
           {{ tasksItem.subtask_name }}
         </p>
       </div>
-    </div>
+    </section>
 
     <!-- Dropdown menu button for Edit & Delete -->
-    <DropdownMenu elapsed>
+    <DropdownMenu elapsed class="">
       <!-- Ellipsis Vertical Icon -->
       <template #menuIcon>
         <EllipsisVerticalIcon class="block size-6" aria-hidden="true" />
@@ -84,11 +91,11 @@ const handleDelete = () => {
 
       <!-- Dropdown menu items -->
       <template #default>
-        <MenuItem v-slot="{ active }" @click="handleEdit">
+        <MenuItem v-slot="{ active }" @click.stop="handleEdit">
           <h2
             :class="[
               active ? 'bg-gray-100 outline-hidden' : '',
-              'block px-4 py-2 text-sm text-gray-700',
+              'block px-4 py-2 text-sm text-gray-700 z-10 ',
             ]">
             Edit
           </h2>

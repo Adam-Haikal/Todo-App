@@ -13,14 +13,14 @@ defineProps({
   <!-- If it is user icon then show when on big screen else hidden,
         If elapsed then show else hidden (must be displayed on all screen sizes) -->
   <div :class="[!elapsed ? 'hidden' : '', ' md:block']">
-    <div class="ml-4 flex items-center md:ml-6">
-      <Menu as="div" class="relative ml-3">
+    <div class="flex items-center">
+      <Menu as="div" class="relative">
         <div>
           <!-- Icon -->
           <MenuButton
             class="relative flex max-w-xs items-center rounded-full focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
             <span class="absolute -inset-1.5" />
-            <slot name="menuIcon"> </slot>
+            <slot name="menuIcon" />
           </MenuButton>
         </div>
 
@@ -34,7 +34,7 @@ defineProps({
           <!-- Dropdown menu items -->
           <MenuItems
             class="absolute right-0 z-10 mt-0 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
-            <slot> </slot>
+            <slot />
           </MenuItems>
         </transition>
       </Menu>
