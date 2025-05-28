@@ -6,7 +6,7 @@ import Input from "@/components/Input.vue";
 
 const taskStore = useTaskStore();
 
-const showCreateForm = ref(false); // Show/hide create form
+const showForm = ref(false); // Show/hide create form
 const taskData = ref({
   task_name: "",
 });
@@ -23,7 +23,7 @@ defineProps({
 });
 
 // const emit = defineEmits(["update:modelValue"]);
-const emit = defineEmits(["newTaskCreated"]);
+// const emit = defineEmits(["newTaskCreated"]);
 </script>
 
 <template>
@@ -40,7 +40,7 @@ const emit = defineEmits(["newTaskCreated"]);
           v-if="hasForm"
           type="button"
           class="cursor-pointer"
-          @click="showCreateForm = !showCreateForm">
+          @click="showForm = !showForm">
           <PlusIcon
             class="h-8 p-1 w-8 bg-teal-400 text-white rounded-lg inline-flex stroke-2"
             aria-hidden="true" />
@@ -48,30 +48,28 @@ const emit = defineEmits(["newTaskCreated"]);
       </div>
     </header>
 
-    <div
-      v-if="showCreateForm && hasForm"
-      class="mb-4 p-4 bg-gray-100 rounded-lg shadow">
+    <div v-if="showForm && hasForm" class="mb-4 p-4 rounded-lg shadow">
       <form
         @submit.prevent="taskStore.createTask(taskData)"
-        class="flex items-center">
+        class="flex space-x-2">
         <Input
           inputType="text"
           v-model="taskData.task_name"
-          class="border p-2 border-gray-300 rounded-lg !rounded-r-none"
+          class="border-gray-300 rounded-lg"
           required />
 
         <!-- Submit form button -->
         <button
           type="submit"
-          class="bg-teal-500 p-1 text-white text-xs rounded-l-none rounded-r-lg cursor-pointer">
+          class="bg-teal-500 p-1 rounded-lg text-white text-xs cursor-pointer">
           Add Task
         </button>
 
         <!-- Close form button -->
         <button
           type="button"
-          @click="showCreateForm = false"
-          class="ml-2 text-gray-500 cursor-pointer hover:text-red-400">
+          @click="showForm = false"
+          class="text-gray-500 cursor-pointer hover:text-red-400">
           Cancel
         </button>
       </form>

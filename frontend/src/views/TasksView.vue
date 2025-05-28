@@ -23,14 +23,6 @@ onMounted(async () => {
     <!-- Display tasks -->
     <main>
       <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <!-- <RouterLink
-          v-for="task in taskStore.tasks"
-          :key="task.id"
-          :to="{ name: 'Subtasks', params: { id: task.id } }"
-          class="gap-1 grid">
-          <CardItem :tasksItem="task" />
-        </RouterLink> -->
-
         <CardItem
           v-for="task in taskStore.tasks"
           :key="task.id"

@@ -50,16 +50,7 @@ export const useTaskStore = defineStore("task", {
     // update a task
     async updateTask(task) {
       try {
-        console.log("Updating task:", task);
-
-        const response = await axiosClient.put(`/api/tasks/${task.id}`, task);
-        this.tasks.push(response.data);
-        // this.tasks.push(response.data.task);
-
-        const index = this.tasks.findIndex((t) => t.id === task.id);
-        if (index !== -1) {
-          this.tasks.splice(index, 1, response.data);
-        }
+        await axiosClient.put(`/api/tasks/${task.id}`, task);
       } catch (error) {
         console.error("Error updating task:", error);
       }

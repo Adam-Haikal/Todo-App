@@ -1,9 +1,10 @@
 <script setup>
+import { defineProps, ref, watch } from "vue";
+import { useTaskStore } from "@/stores/task";
 import { Disclosure, DisclosureButton, MenuItem } from "@headlessui/vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
-import { defineProps, h } from "vue";
 import DropdownMenu from "@/components/DropdownMenu.vue";
-import { useTaskStore } from "@/stores/task";
+import Input from "@/components/Input.vue";
 
 const taskStore = useTaskStore();
 
@@ -22,6 +23,7 @@ const props = defineProps({
   },
 });
 
+const showForm = ref(false); // Show/hide update form
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -34,9 +36,6 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   }
 );
 
-const handleEdit = () => {
-  console.log("edit");
-};
 const handleDelete = () => {
   console.log("delete");
 };
@@ -44,7 +43,7 @@ const handleDelete = () => {
 
 <template>
   <div
-    class="bg-white h-15 space-x-1 rounded-lg p-3 border-2 border-gray-200 hover:bg-white/30 flex items-center">
+    class="bg-white space-x-1 rounded-lg p-3 border-2 border-gray-200 hover:bg-white/30 flex items-center">
     <!-- Checkbox for completed status -->
     <!-- v-if="subTask" -->
     <button
@@ -80,7 +79,38 @@ const handleDelete = () => {
           {{ tasksItem.subtask_name }}
         </p>
       </div>
+
+      <div v-if="showForm" class="mr-2">
+        <form
+          action=""
+          @submit.prevent="
+            taskStore.updateTask(tasksItem);
+            showForm = false;
+          "
+          class="flex space-x-2">
+          <Input
+            inputType="text"
+            v-model="tasksItem.task_name"
+            class="rounded-lg" />
+
+          <!-- Submit form button -->
+          <button
+            type="submit"
+            class="bg-teal-500 p-1 rounded-lg text-white text-xs cursor-pointer">
+            Add Task
+          </button>
+
+          <!-- Close form button -->
+          <button
+            type="button"
+            @click="showForm = false"
+            class="text-gray-500 cursor-pointer hover:text-red-400">
+            Cancel
+          </button>
+        </form>
+      </div>
     </section>
+    <!-- Edit section -->
 
     <!-- Dropdown menu button for Edit & Delete -->
     <DropdownMenu elapsed class="">
@@ -91,7 +121,7 @@ const handleDelete = () => {
 
       <!-- Dropdown menu items -->
       <template #default>
-        <MenuItem v-slot="{ active }" @click.stop="handleEdit">
+        <MenuItem v-slot="{ active }" @click="showForm = !showForm">
           <h2
             :class="[
               active ? 'bg-gray-100 outline-hidden' : '',

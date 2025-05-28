@@ -56,7 +56,16 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $request->validate([
+            'task_name' => 'required|string|max:255',
+        ]);
+
+        $task->update([
+            'task_name' => $request->task_name,
+        ]);
+
+        // return response()->noContent();
+        return response()->json(['task' => $task, 'message' => 'Task updated successfully'], 200);
     }
 
     /**
