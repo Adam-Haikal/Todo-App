@@ -1,6 +1,5 @@
 <script setup>
-import { onMounted, watch } from "vue";
-import { RouterLink } from "vue-router";
+import { onMounted } from "vue";
 import { useTaskStore } from "@/stores/task";
 import CardItem from "@/components/CardItem.vue";
 import Header from "@/components/Header.vue";

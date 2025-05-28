@@ -50,7 +50,10 @@ defineProps({
 
     <div v-if="showForm && hasForm" class="mb-4 p-4 rounded-lg shadow">
       <form
-        @submit.prevent="taskStore.createTask(taskData)"
+        @submit.prevent="
+          taskStore.createTask(taskData);
+          showForm = false;
+        "
         class="flex space-x-2">
         <Input
           inputType="text"

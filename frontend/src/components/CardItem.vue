@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch } from "vue";
+import { defineProps, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
 import { Disclosure, DisclosureButton, MenuItem } from "@headlessui/vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
@@ -43,10 +43,10 @@ const handleDelete = () => {
 
 <template>
   <div
-    class="bg-white space-x-1 rounded-lg p-3 border-2 border-gray-200 hover:bg-white/30 flex items-center">
+    class="bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200 hover:bg-white/30 flex items-center">
     <!-- Checkbox for completed status -->
-    <!-- v-if="subTask" -->
     <button
+      v-if="subTask"
       type="button"
       name="completedButton"
       id="completedButton"
@@ -58,17 +58,21 @@ const handleDelete = () => {
       ]" />
 
     <!-- Task content -->
-    <section class="w-full">
+    <section class="w-full ml-2">
       <!-- Only display if it is task -->
       <div v-if="!subTask">
-        <router-link :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
-          <p
-            class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
-            {{ tasksItem.task_name }}
-          </p>
-          <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
-            Last updated: {{ formattedDate }}
-          </p>
+        <router-link
+          v-show="tasksItem.id"
+          :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
+          <div class="py-2">
+            <p
+              class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
+              {{ tasksItem.task_name }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
+              Last updated: {{ formattedDate }}
+            </p>
+          </div>
         </router-link>
       </div>
 
@@ -80,9 +84,8 @@ const handleDelete = () => {
         </p>
       </div>
 
-      <div v-if="showForm" class="mr-2">
+      <div v-if="showForm" class="mr-2 mb-2">
         <form
-          action=""
           @submit.prevent="
             taskStore.updateTask(tasksItem);
             showForm = false;

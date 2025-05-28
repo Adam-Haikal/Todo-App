@@ -32,16 +32,20 @@ export const useTaskStore = defineStore("task", {
         const userStore = useUserStore();
 
         const userId = userStore.user.id; // Get the user ID from the user store
-        const response = await axiosClient.post("/api/tasks", {
+        const res = await axiosClient.post("/api/tasks", {
           ...task,
           user_id: userId,
         });
+        // clear the input field
+        task.task_name = "";
+
+        this.getTasks();
 
         // Redirect to the subtasks view after creating a task
-        router.push({
-          name: "Subtasks",
-          params: { id: response.data.task.id },
-        });
+        // router.push({
+        //   name: "Subtasks",
+        //   params: { id: response.data.task.id },
+        // });
       } catch (error) {
         console.error("Error creating task:", error);
       }
