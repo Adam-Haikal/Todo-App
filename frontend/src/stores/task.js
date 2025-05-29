@@ -38,14 +38,19 @@ export const useTaskStore = defineStore("task", {
         const userStore = useUserStore();
 
         const userId = userStore.user.id; // Get the user ID from the user store
-        const res = await axiosClient.post("/api/tasks", {
+        const response = await axiosClient.post("/api/tasks", {
           ...task,
           user_id: userId,
         });
 
-        task.task_name = ""; // clear the input field
+        // Add the new task to the top of the local state
+        this.tasks.unshift({
+          ...response.data.task,
+          original_task_name: response.data.task.task_name,
+        });
 
-        this.getTasks();
+        // clear the input field and fetch the tasks
+        task.task_name = "";
 
         // Redirect to the subtasks view after creating a task
         // router.push({
@@ -75,15 +80,12 @@ export const useTaskStore = defineStore("task", {
     },
 
     // delete a task
-    async deleteTask(id) {
+    async deleteTask(taskId) {
       try {
-        await axiosClient.delete(`/api/tasks/${id}`);
-        this.tasks = this.tasks.filter((task) => task.id !== id); // Remove the deleted task from the local state
+        await axiosClient.delete(`/api/tasks/${taskId}`);
 
-        // const index = this.tasks.findIndex((t) => t.id === id);
-        // if (index !== -1) {
-        //   this.tasks.splice(index, 1);
-        // }
+        // Remove the deleted task from the local state
+        this.tasks = this.tasks.filter((task) => task.id !== taskId);
       } catch (error) {
         console.error("Error deleting task:", error);
       }

@@ -24,7 +24,6 @@ const props = defineProps({
 });
 
 const showForm = ref(false); // Show/hide update form
-const originalTaskName = ref(props.tasksItem.task_name); // Store the original value of task_name
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -36,14 +35,6 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     hour12: true,
   }
 );
-
-const cancelUpdate = () => {
-  props.tasksItem.task_name = originalTaskName.value; // assuming originalTaskName is the original value of task_name
-};
-
-const handleDelete = () => {
-  console.log("delete");
-};
 </script>
 
 <template>
@@ -66,9 +57,7 @@ const handleDelete = () => {
     <section class="w-full ml-2">
       <!-- Only display if it is task -->
       <div v-if="!subTask">
-        <router-link
-          v-show="tasksItem.id"
-          :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
+        <router-link :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
           <div class="py-2">
             <p
               name="taskName"
@@ -143,7 +132,9 @@ const handleDelete = () => {
           </h2>
         </MenuItem>
 
-        <MenuItem v-slot="{ active }" @click="handleDelete">
+        <MenuItem
+          v-slot="{ active }"
+          @click="taskStore.deleteTask(tasksItem.id)">
           <h2
             :class="[
               active ? 'bg-gray-100 outline-hidden' : '',

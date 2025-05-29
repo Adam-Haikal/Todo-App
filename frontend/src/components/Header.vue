@@ -22,6 +22,12 @@ defineProps({
   },
 });
 
+// const handleCreateTask = async () => {
+//   await taskStore.createTask({ ...taskData.value }); // send a copy
+//   taskData.value = { task_name: "" }; // reset with a new object
+//   showForm.value = false;
+// };
+
 // const emit = defineEmits(["update:modelValue"]);
 // const emit = defineEmits(["newTaskCreated"]);
 </script>
