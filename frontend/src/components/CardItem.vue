@@ -24,6 +24,7 @@ const props = defineProps({
 });
 
 const showForm = ref(false); // Show/hide update form
+const originalTaskName = ref(props.tasksItem.task_name); // Store the original value of task_name
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -35,6 +36,10 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     hour12: true,
   }
 );
+
+const cancelUpdate = () => {
+  props.tasksItem.task_name = originalTaskName.value; // assuming originalTaskName is the original value of task_name
+};
 
 const handleDelete = () => {
   console.log("delete");
@@ -66,6 +71,7 @@ const handleDelete = () => {
           :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
           <div class="py-2">
             <p
+              name="taskName"
               class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
               {{ tasksItem.task_name }}
             </p>
@@ -106,7 +112,10 @@ const handleDelete = () => {
           <!-- Close form button -->
           <button
             type="button"
-            @click="showForm = false"
+            @click="
+              showForm = false;
+              taskStore.resetTaskName(tasksItem.id);
+            "
             class="text-gray-500 cursor-pointer hover:text-red-400">
             Cancel
           </button>

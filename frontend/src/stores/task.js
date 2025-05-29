@@ -10,10 +10,10 @@ export const useTaskStore = defineStore("task", {
 
   getters: {
     hasTasks: (state) => state.tasks && state.tasks.length > 0, // task exists
-    // Get completed tasks
-    completedTasks: (state) => state.tasks.filter((task) => task.completed),
-    // Get pending tasks
-    pendingTasks: (state) => state.tasks.filter((task) => !task.completed),
+
+    completedTasks: (state) => state.tasks.filter((task) => task.completed), // Get completed tasks
+
+    pendingTasks: (state) => state.tasks.filter((task) => !task.completed), // Get pending tasks
   },
 
   actions: {
@@ -21,11 +21,17 @@ export const useTaskStore = defineStore("task", {
     async getTasks() {
       try {
         const response = await axiosClient.get("/api/tasks");
-        this.tasks = response.data;
+
+        // Map the response data to include the original_task_name for reset
+        this.tasks = response.data.map((task) => ({
+          ...task,
+          original_task_name: task.task_name,
+        }));
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     },
+
     // create a new task
     async createTask(task) {
       try {
@@ -36,8 +42,8 @@ export const useTaskStore = defineStore("task", {
           ...task,
           user_id: userId,
         });
-        // clear the input field
-        task.task_name = "";
+
+        task.task_name = ""; // clear the input field
 
         this.getTasks();
 
@@ -57,6 +63,14 @@ export const useTaskStore = defineStore("task", {
         await axiosClient.put(`/api/tasks/${task.id}`, task);
       } catch (error) {
         console.error("Error updating task:", error);
+      }
+    },
+
+    // reset the task name
+    resetTaskName(taskId) {
+      const task = this.tasks.find((task) => task.id === taskId);
+      if (task) {
+        task.task_name = task.original_task_name;
       }
     },
 
