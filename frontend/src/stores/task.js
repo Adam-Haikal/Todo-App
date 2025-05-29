@@ -10,9 +10,7 @@ export const useTaskStore = defineStore("task", {
 
   getters: {
     hasTasks: (state) => state.tasks && state.tasks.length > 0, // task exists
-
     completedTasks: (state) => state.tasks.filter((task) => task.completed), // Get completed tasks
-
     pendingTasks: (state) => state.tasks.filter((task) => !task.completed), // Get pending tasks
   },
 

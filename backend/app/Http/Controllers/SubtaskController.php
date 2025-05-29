@@ -13,18 +13,18 @@ class SubtaskController extends Controller
     public function index()
     {
         // // Fetch all tasks with pagination
-        $tasks = Subtask::latest()
+        $subtasks = Subtask::latest()
             ->simplePaginate(15)
             ->getCollection()
-            ->map(function ($task) {
+            ->map(function ($subtasks) {
                 return [
-                    'id' => $task->id,
-                    'task_name' => $task->task_name,
+                    'id' => $subtasks->id,
+                    'subtask_name' => $subtasks->subtask_name,
                 ];
             });
         // $tasks = Task::latest()->get();
 
-        return response()->json($tasks);
+        return response()->json($subtasks);
         // $list = Task::latest()->simplePaginate(9);
     }
 
@@ -34,21 +34,26 @@ class SubtaskController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'task_name' => 'required|string|max:255',
+            'subtask_name' => 'required|string|max:255',
         ]);
 
+        $completedAt = $request->completed ? now() : null;
+
         $subtask = Subtask::create([
-            'task_name' => $request->task_name,
+            'subtask_name' => $request->subtask_name,
+            'task_id' => $request->subtask_id,
+            'completed' => $request->completed,
+            'completed_at' => $completedAt,
         ]);
 
         // return response()->noContent();
-        return response()->json(['subtask' => $subtask, 'message' => 'Task created successfully'], 201);
+        return response()->json(['subtask' => $subtask, 'message' => 'Subtask created successfully'], 201);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Subtask $task)
+    public function update(Request $request, Subtask $subtask)
     {
         //
     }
@@ -56,14 +61,14 @@ class SubtaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Subtask $task)
+    public function destroy(Subtask $subtask)
     {
         // check if task is created by the user, if yes then delete
-        if ($task->user_id == auth()->user()->id) {
-            $task->delete();
+        if ($subtask->user_id == auth()->user()->id) {
+            $subtask->delete();
             // return response()->noContent();
-            return response()->json(['message' => 'Task deleted successfully'], 204);
+            return response()->json(['message' => 'Subtask deleted successfully'], 204);
         }
-        return response()->json(['message' => 'You do not have permission to delete this task'], 403);
+        return response()->json(['message' => 'You do not have permission to delete this subtask'], 403);
     }
 }

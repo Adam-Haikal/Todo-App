@@ -34,7 +34,7 @@ const submit = async () => {
     formData.append("completed", Number(newTask.value.completed));
 
     const response = await axiosClient.post(
-      `/api/tasks/${taskId}`,
+      `/api/subtasks/${taskId}`,
       formData
     );
     // Handle the response data

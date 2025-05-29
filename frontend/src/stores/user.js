@@ -37,7 +37,7 @@ export const useUserStore = defineStore("user", {
 
     async login(formData) {
       await axiosClient.get("/sanctum/csrf-cookie");
-      this.errors = {}; // clear old errors
+      this.clearErrors = {}; // clear old errors
       try {
         await axiosClient.post("/login", formData);
         this.isLoggedIn = true;
@@ -51,7 +51,7 @@ export const useUserStore = defineStore("user", {
 
     async register(formData) {
       await axiosClient.get("/sanctum/csrf-cookie");
-      this.errors = {}; // clear old errors
+      this.clearErrors = {}; // clear old errors
       try {
         await axiosClient.post("/register", formData);
         this.isLoggedIn = true;
