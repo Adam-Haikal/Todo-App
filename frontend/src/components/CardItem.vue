@@ -17,7 +17,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  subTask: {
+  isSubtask: {
     type: Boolean,
     default: false,
   },
@@ -35,6 +35,16 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     hour12: true,
   }
 );
+
+const handleUpdate = async () => {
+  if (props.isSubtask) {
+    await subtaskStore.updateSubtask(taskData.value);
+  } else {
+    await taskStore.updateTask(taskData.value);
+  }
+  showForm.value = false;
+  // taskData.value = {};
+};
 </script>
 
 <template>
@@ -42,7 +52,7 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     class="bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200 hover:bg-white/30 flex items-center">
     <!-- Checkbox for completed status -->
     <button
-      v-if="subTask"
+      v-if="isSubtask"
       type="button"
       name="completedButton"
       id="completedButton"
@@ -56,13 +66,13 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     <!-- Task content -->
     <section class="w-full ml-2">
       <!-- Only display if it is task -->
-      <div v-if="!subTask">
+      <div v-if="!isSubtask">
         <router-link :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
           <div class="py-2">
             <p
               name="taskName"
               class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
-              {{ tasksItem.task_name }}
+              {{ tasksItem.name }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
               Last updated: {{ formattedDate }}
@@ -72,24 +82,16 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
       </div>
 
       <!-- Only display subtask info if it exists -->
-      <div v-if="subTask">
+      <div v-if="isSubtask" class="py-4">
         <p
           class="text-md font-semibold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
-          {{ tasksItem.subtask_name }}
+          {{ tasksItem.name }}
         </p>
       </div>
 
       <div v-if="showForm" class="mr-2 mb-2">
-        <form
-          @submit.prevent="
-            taskStore.updateTask(tasksItem);
-            showForm = false;
-          "
-          class="flex space-x-2">
-          <Input
-            inputType="text"
-            v-model="tasksItem.task_name"
-            class="rounded-lg" />
+        <form @submit.prevent="handleUpdate()" class="flex space-x-2">
+          <Input inputType="text" v-model="tasksItem.name" class="rounded-lg" />
 
           <!-- Submit form button -->
           <button

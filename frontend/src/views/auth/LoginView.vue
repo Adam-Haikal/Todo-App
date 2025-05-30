@@ -24,7 +24,9 @@ const formData = ref({
       <div v-if="userStore.hasErrors">
         <ul class="text-red-600 bg-red-100 p-4 rounded-md my-2">
           <li v-for="(error, index) in userStore.errors" :key="index">
-            <p v-for="(message, i) in error" :key="i" class="text-center">{{ message }}</p>
+            <p v-for="(message, i) in error" :key="i" class="text-center">
+              {{ message }}
+            </p>
           </li>
         </ul>
       </div>
