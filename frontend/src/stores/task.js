@@ -39,7 +39,7 @@ export const useTaskStore = defineStore("task", {
           ...task,
           user_id: userId,
         });
-        s;
+
         /* Add the new task to the top of the local state */
         this.tasks.unshift({
           ...response.data.task,

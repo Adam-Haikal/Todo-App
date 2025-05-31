@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subtask;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class SubtaskController extends Controller
@@ -30,6 +31,12 @@ class SubtaskController extends Controller
      */
     public function store(Request $request)
     {
+        /* Check if the authenticated user owns the parent task */
+        $task = Task::find($request->task_id);
+        if (!$task || $task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to create a subtask for this task'], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -51,6 +58,11 @@ class SubtaskController extends Controller
      */
     public function update(Request $request, Subtask $subtask)
     {
+        // Only allow update if the authenticated user owns the parent task
+        if ($subtask->task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to update this subtask'], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -67,11 +79,12 @@ class SubtaskController extends Controller
      */
     public function destroy(Subtask $subtask)
     {
-        /* check if subtask is created by the user, if yes then delete */
-        if ($subtask->task->user_id == auth()->id()) {
-            $subtask->delete();
-            return response()->json(['message' => 'Subtask deleted successfully'], 204);
+        /* Only allow delete if the authenticated user owns the parent task */
+        if ($subtask->task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to delete this subtask'], 403);
         }
-        return response()->json(['message' => 'You do not have permission to delete this subtask'], 403);
+
+        $subtask->delete();
+        return response()->json(['message' => 'Subtask deleted successfully'], 204);
     }
 }

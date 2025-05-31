@@ -17,19 +17,7 @@ class TaskController extends Controller
             ->latest()
             ->get();
 
-        // // Fetch all tasks with pagination
-        // $tasks = Task::latest()
-        //     ->simplePaginate(15)
-        //     ->getCollection()
-        //     ->map(function ($task) {
-        //         return [
-        //             'id' => $task->id,
-        //             'name' => $task->name,
-        //         ];
-        //     });
-
         return response()->json($tasks);
-        // $list = Task::latest()->simplePaginate(9);
     }
 
     /**
@@ -37,6 +25,11 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        /* Authorization: Only allow if user is authenticated */
+        if (!auth()->check()) {
+            return response()->json(['message' => 'You do not have permission to create a task'], 401);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -54,6 +47,11 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        /* Authorization: Only allow if user owns the task */
+        if ($task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to update this task'], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -62,7 +60,6 @@ class TaskController extends Controller
             'name' => $request->name,
         ]);
 
-        // return response()->noContent();
         return response()->json(['task' => $task, 'message' => 'Task updated successfully'], 200);
     }
 
@@ -71,11 +68,12 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        /* check if task is created by the user, if yes then delete */
-        if ($task->user_id == auth()->id()) {
-            $task->delete();
-            return response()->json(['message' => 'Task deleted successfully'], 204);
+        // Authorization: Only allow if user owns the task
+        if ($task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to delete this task'], 403);
         }
-        return response()->json(['message' => 'You do not have permission to delete this task'], 403);
+
+        $task->delete();
+        return response()->json(['message' => 'Task deleted successfully'], 204);
     }
 }
