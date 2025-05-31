@@ -1,12 +1,14 @@
 <script setup>
 import { defineProps, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
+import { useSubtaskStore } from "@/stores/subtask";
 import { Disclosure, DisclosureButton, MenuItem } from "@headlessui/vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import Input from "@/components/Input.vue";
 
 const taskStore = useTaskStore();
+const subtaskStore = useSubtaskStore();
 
 const props = defineProps({
   tasksItem: {
@@ -36,14 +38,13 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   }
 );
 
-const handleUpdate = async () => {
+const handleUpdate = async (taskItem) => {
   if (props.isSubtask) {
-    await subtaskStore.updateSubtask(taskData.value);
+    await subtaskStore.updateSubtask(taskItem);
   } else {
-    await taskStore.updateTask(taskData.value);
+    await taskStore.updateTask(taskItem);
   }
   showForm.value = false;
-  // taskData.value = {};
 };
 </script>
 
@@ -71,7 +72,7 @@ const handleUpdate = async () => {
           <div class="py-2">
             <p
               name="taskName"
-              class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
+              class="text-md font-bold text-gray-300 dark:text-gray-900">
               {{ tasksItem.name }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
@@ -83,15 +84,19 @@ const handleUpdate = async () => {
 
       <!-- Only display subtask info if it exists -->
       <div v-if="isSubtask" class="py-4">
-        <p
-          class="text-md font-semibold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
+        <p class="text-md font-semibold text-gray-300 dark:text-gray-900">
           {{ tasksItem.name }}
         </p>
       </div>
 
+      <!-- Update form -->
       <div v-if="showForm" class="mr-2 mb-2">
-        <form @submit.prevent="handleUpdate()" class="flex space-x-2">
-          <Input inputType="text" v-model="tasksItem.name" class="rounded-lg" />
+        <form @submit.prevent="handleUpdate(tasksItem)" class="flex space-x-2">
+          <Input
+            inputType="text"
+            v-model="tasksItem.name"
+            class="rounded-lg"
+            required />
 
           <!-- Submit form button -->
           <button
@@ -113,7 +118,6 @@ const handleUpdate = async () => {
         </form>
       </div>
     </section>
-    <!-- Edit section -->
 
     <!-- Dropdown menu button for Edit & Delete -->
     <DropdownMenu elapsed class="">

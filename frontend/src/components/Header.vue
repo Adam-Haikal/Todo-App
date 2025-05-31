@@ -26,16 +26,24 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  taskId: {
+    type: String,
+    required: false,
+  },
 });
 
-const handleSubmit = async () => {
+const handleSubmit = async (formData) => {
   if (props.isSubtask) {
-    await subtaskStore.createSubtask(taskData.value);
+    await subtaskStore.createSubtask({
+      name: formData.name,
+      task_id: props.taskId,
+      completed: formData.completed ?? false,
+    });
   } else {
-    await taskStore.createTask(taskData.value);
+    await taskStore.createTask(formData);
   }
+  taskData.value = {};
   showForm.value = false;
-  // taskData.value = {};
 };
 
 // const emit = defineEmits(["update:modelValue"]);
@@ -66,8 +74,8 @@ const handleSubmit = async () => {
 
     <div v-if="showForm && hasForm" class="mb-4 p-4 rounded-lg shadow">
       <form
-        @submit.prevent="handleSubmit"
-        class="flex space-x-2 max-w-5xl mx-auto">
+        @submit.prevent="handleSubmit(taskData)"
+        class="flex items-center space-x-2 max-w-5xl mx-auto">
         <Input
           inputType="text"
           v-model="taskData.name"
@@ -75,12 +83,11 @@ const handleSubmit = async () => {
           required />
 
         <!-- input for completed checkbox -->
-        <span class="flex items-center">
+        <span v-if="isSubtask" class="size-10">
           <Input
-            v-if="isSubtask"
             inputType="checkbox"
             v-model="taskData.completed"
-            class="w-9 h-9" />
+            class="size-10" />
         </span>
 
         <!-- Submit form button -->

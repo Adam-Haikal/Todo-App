@@ -10,7 +10,7 @@ class Subtask extends Model
         'completed' => 'boolean',
     ];
 
-    protected $fillable = ['name', 'completed'];
+    protected $fillable = ['name', 'task_id', 'completed'];
 
     public function task()
     {

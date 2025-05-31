@@ -39,21 +39,12 @@ export const useTaskStore = defineStore("task", {
           ...task,
           user_id: userId,
         });
-
+s
         /* Add the new task to the top of the local state */
         this.tasks.unshift({
           ...response.data.task,
           original_name: response.data.task.name,
         });
-
-        /* clear the input field and fetch the tasks */
-        task.name = "";
-
-        /* Redirect to the subtasks view after creating a task */
-        // router.push({
-        //   name: "Subtasks",
-        //   params: { id: response.data.task.id },
-        // });
       } catch (error) {
         console.error("Error creating task:", error);
       }

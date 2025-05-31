@@ -36,7 +36,13 @@ export const useSubtaskStore = defineStore("subtask", {
     /* Create subtask */
     async createSubtask(task) {
       try {
-        await axiosClient.post("/api/subtasks", task);
+        const response = await axiosClient.post("/api/subtasks", task);
+
+        /* Add the new subtask to the top of the local state */
+        this.subtasks.unshift({
+          ...response.data.subtask,
+          original_name: response.data.subtask.name,
+        });
       } catch (error) {
         console.error("Error creating subtask:", error);
       }

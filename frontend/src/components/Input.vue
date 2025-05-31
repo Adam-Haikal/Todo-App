@@ -59,5 +59,5 @@ const inputAttrs = inputMappings[props.inputType] || {};
   <input
     :="inputAttrs"
     v-model="data"
-    class="first:rounded-t-md last:rounded-b-md block bg-white px-3 py-2 text-base text-gray-900 -outline-offset-2 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm/6" />
+    class="w-full border-2 border-gray-300 first:rounded-t-md last:rounded-b-md block bg-white px-3 py-2 text-base text-gray-900 -outline-offset-2 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm/6" />
 </template>

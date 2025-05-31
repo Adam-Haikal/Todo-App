@@ -9,38 +9,11 @@ import Header from "@/components/Header.vue";
 const route = useRoute();
 const subtaskStore = useSubtaskStore();
 
-// const taskId = route.params.id;
-
-// const submit = async () => {
-//   try {
-//     if (!newTask.value.name.trim()) {
-//       console.error("Task name is required");
-//       return;
-//     }
-//     const formData = new FormData();
-//     formData.append("task_id", taskId);
-//     formData.append("name", newTask.value.name);
-//     formData.append("completed", Number(newTask.value.completed));
-
-//     const response = await axiosClient.post(
-//       `/api/subtasks/${taskId}`,
-//       formData
-//     );
-//     /* Handle the response data */
-//     tasks.value.push(
-//       response.data
-//     ); /* <--- Update the tasks array with the new subtask data */
-
-//     showCreateForm.value = false;
-//   } catch (error) {
-//     console.error("Error creating task", error);
-//   }
-// };
+const taskId = route.params.id;
 
 onMounted(async () => {
   try {
-    const subtaskId = route.params.id;
-    await subtaskStore.getSubtasks(subtaskId);
+    await subtaskStore.getSubtasks(taskId);
   } catch (error) {
     console.error("Error fetching subtasks:", error);
   }
@@ -49,7 +22,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <Header title="Subtasks" hasForm isSubtask />
+    <Header title="Subtasks" :taskId="taskId" hasForm isSubtask />
 
     <!-- Display tasks -->
     <main>
@@ -60,7 +33,7 @@ onMounted(async () => {
           :tasksItem="subtask"
           isSubtask />
 
-        <p v-if="!subtaskStore.hasTasks">No subtasks available.</p>
+        <p v-if="!subtaskStore.hasSubtasks">No subtasks available.</p>
       </section>
     </main>
   </div>
