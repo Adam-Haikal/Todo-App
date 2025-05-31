@@ -8,10 +8,9 @@ import Input from "@/components/Input.vue";
 const taskStore = useTaskStore();
 const subtaskStore = useSubtaskStore();
 
-const showForm = ref(false); // Show/hide create form
-const taskData = ref({
-  // name: "",
-});
+/* Show/hide create form */
+const showForm = ref(false);
+const taskData = ref({});
 
 const props = defineProps({
   title: {

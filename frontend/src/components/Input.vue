@@ -1,7 +1,8 @@
 <script setup>
 import { defineModel } from "vue";
 
-const data = defineModel(); // replaces modelValue + update:modelValue
+/* replaces modelValue + update:modelValue */
+const data = defineModel();
 const props = defineProps({
   inputType: String,
 });
@@ -51,7 +52,7 @@ const inputMappings = {
   },
 };
 
-// Check if the inputType exists in the inputMappings object and return the corresponding attributes
+/* Check if the inputType exists in the inputMappings object and return the corresponding attributes */
 const inputAttrs = inputMappings[props.inputType] || {};
 </script>
 

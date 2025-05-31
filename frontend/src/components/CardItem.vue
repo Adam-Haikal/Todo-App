@@ -25,7 +25,8 @@ const props = defineProps({
   },
 });
 
-const showForm = ref(false); // Show/hide update form
+/* Show/hide update form */
+const showForm = ref(false);
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -45,6 +46,15 @@ const handleUpdate = async (taskItem) => {
     await taskStore.updateTask(taskItem);
   }
   showForm.value = false;
+};
+
+const handleCancel = (id) => {
+  showForm.value = false;
+  if (props.isSubtask) {
+    subtaskStore.resetSubtaskName(id);
+  } else {
+    taskStore.resetTaskName(id);
+  }
 };
 
 const handleDelete = async (id) => {
@@ -116,10 +126,7 @@ const handleDelete = async (id) => {
           <!-- Close form button -->
           <button
             type="button"
-            @click="
-              showForm = false;
-              taskStore.resetTaskName(tasksItem.id);
-            "
+            @click="handleCancel(tasksItem.id)"
             class="text-gray-500 cursor-pointer hover:text-red-400">
             Cancel
           </button>

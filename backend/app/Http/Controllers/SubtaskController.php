@@ -14,10 +14,6 @@ class SubtaskController extends Controller
     {
         // Display tasks for specific user
         $taskId = $request->query('task_id');
-        // $subtasks = Subtask::where('user_id', auth()->id())
-        //     ->where('task_id', $taskId)
-        //     ->latest()
-        //     ->get();
 
         $subtasks = Subtask::where('task_id', $taskId)
             ->whereHas('task', function ($query) {
