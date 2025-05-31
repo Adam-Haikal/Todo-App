@@ -73,7 +73,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         /* check if task is created by the user, if yes then delete */
-        if ($task->user_id == auth()->user()->id) {
+        if ($task->user_id == auth()->id()) {
             $task->delete();
             return response()->json(['message' => 'Task deleted successfully'], 204);
         }

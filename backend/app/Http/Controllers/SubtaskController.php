@@ -72,7 +72,7 @@ class SubtaskController extends Controller
     public function destroy(Subtask $subtask)
     {
         /* check if subtask is created by the user, if yes then delete */
-        if ($subtask->user_id == auth()->user()->id) {
+        if ($subtask->task->user_id == auth()->id()) {
             $subtask->delete();
             return response()->json(['message' => 'Subtask deleted successfully'], 204);
         }

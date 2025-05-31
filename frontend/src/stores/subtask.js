@@ -56,13 +56,27 @@ export const useSubtaskStore = defineStore("subtask", {
         console.error("Error updating subtask:", error);
       }
     },
-  },
 
-  /* Reset subtask name */
-  resetSubtaskName(subtaskId) {
-    const subtask = this.subtasks.find((subtask) => subtask.id === subtaskId);
-    if (subtask) {
-      subtask.name = subtask.original_name;
-    }
+    /* Reset subtask name */
+    resetSubtaskName(subtaskId) {
+      const subtask = this.subtasks.find((subtask) => subtask.id === subtaskId);
+      if (subtask) {
+        subtask.name = subtask.original_name;
+      }
+    },
+
+    /* Delete subtask */
+    async deleteSubtask(subtaskId) {
+      try {
+        await axiosClient.delete(`/api/subtasks/${subtaskId}`);
+
+        /* Remove the deleted subtask from the local state */
+        this.subtasks = this.subtasks.filter(
+          (subtask) => subtask.id !== subtaskId
+        );
+      } catch (error) {
+        console.error("Error deleting task:", error);
+      }
+    },
   },
 });

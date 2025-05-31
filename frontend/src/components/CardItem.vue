@@ -46,6 +46,14 @@ const handleUpdate = async (taskItem) => {
   }
   showForm.value = false;
 };
+
+const handleDelete = async (id) => {
+  if (props.isSubtask) {
+    await subtaskStore.deleteSubtask(id);
+  } else {
+    await taskStore.deleteTask(id);
+  }
+};
 </script>
 
 <template>
@@ -138,9 +146,7 @@ const handleUpdate = async (taskItem) => {
           </h2>
         </MenuItem>
 
-        <MenuItem
-          v-slot="{ active }"
-          @click="taskStore.deleteTask(tasksItem.id)">
+        <MenuItem v-slot="{ active }" @click="handleDelete(tasksItem.id)">
           <h2
             :class="[
               active ? 'bg-gray-100 outline-hidden' : '',
