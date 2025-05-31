@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
-import router from "@/router";
 import { useUserStore } from "@/stores/user";
 
 export const useTaskStore = defineStore("task", {
@@ -9,58 +8,49 @@ export const useTaskStore = defineStore("task", {
   }),
 
   getters: {
-    hasTasks: (state) => state.tasks && state.tasks.length > 0, // task exists
-    completedTasks: (state) => state.tasks.filter((task) => task.completed), // Get completed tasks
-    pendingTasks: (state) => state.tasks.filter((task) => !task.completed), // Get pending tasks
+    /* Check if any task exists */
+    hasTasks: (state) => state.tasks && state.tasks.length > 0,
   },
 
   actions: {
-    // Fetch tasks from the API
+    /* Fetch tasks  */
     async getTasks() {
       try {
         const response = await axiosClient.get("/api/tasks");
 
-        // Map the response data to include the original_task_name for reset
+        /* Map the response data to include the original_name for reset */
         this.tasks = response.data.map((task) => ({
           ...task,
-          original_task_name: task.task_name,
+          original_name: task.name,
         }));
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     },
 
-    // create a new task
+    /* Create a new task */
     async createTask(task) {
       try {
         const userStore = useUserStore();
 
-        const userId = userStore.user.id; // Get the user ID from the user store
+        /* Get the user ID from the user store */
+        const userId = userStore.user.id;
         const response = await axiosClient.post("/api/tasks", {
           ...task,
           user_id: userId,
         });
 
-        // Add the new task to the top of the local state
+        /* Add the new task to the top of the local state */
         this.tasks.unshift({
           ...response.data.task,
-          original_task_name: response.data.task.task_name,
+          original_name: response.data.task.name,
         });
-
-        // clear the input field and fetch the tasks
-        task.task_name = "";
-
-        // Redirect to the subtasks view after creating a task
-        // router.push({
-        //   name: "Subtasks",
-        //   params: { id: response.data.task.id },
-        // });
       } catch (error) {
         console.error("Error creating task:", error);
       }
     },
 
-    // update a task
+    /* Update a task */
     async updateTask(task) {
       try {
         await axiosClient.put(`/api/tasks/${task.id}`, task);
@@ -69,20 +59,20 @@ export const useTaskStore = defineStore("task", {
       }
     },
 
-    // reset the task name
+    /* Reset the task name */
     resetTaskName(taskId) {
       const task = this.tasks.find((task) => task.id === taskId);
       if (task) {
-        task.task_name = task.original_task_name;
+        task.name = task.original_name;
       }
     },
 
-    // delete a task
+    /* Delete a task */
     async deleteTask(taskId) {
       try {
         await axiosClient.delete(`/api/tasks/${taskId}`);
 
-        // Remove the deleted task from the local state
+        /* Remove the deleted task from the local state */
         this.tasks = this.tasks.filter((task) => task.id !== taskId);
       } catch (error) {
         console.error("Error deleting task:", error);

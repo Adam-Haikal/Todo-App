@@ -1,17 +1,18 @@
 <script setup>
 import { ref } from "vue";
 import { useTaskStore } from "@/stores/task";
+import { useSubtaskStore } from "@/stores/subtask";
 import { PlusIcon } from "@heroicons/vue/24/outline";
 import Input from "@/components/Input.vue";
 
 const taskStore = useTaskStore();
+const subtaskStore = useSubtaskStore();
 
-const showForm = ref(false); // Show/hide create form
-const taskData = ref({
-  task_name: "",
-});
+/* Show/hide create form */
+const showForm = ref(false);
+const taskData = ref({});
 
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     default: "Tasks",
@@ -20,13 +21,29 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  isSubtask: {
+    type: Boolean,
+    default: false,
+  },
+  taskId: {
+    type: String,
+    required: false,
+  },
 });
 
-// const handleCreateTask = async () => {
-//   await taskStore.createTask({ ...taskData.value }); // send a copy
-//   taskData.value = { task_name: "" }; // reset with a new object
-//   showForm.value = false;
-// };
+const handleSubmit = async (formData) => {
+  if (props.isSubtask) {
+    await subtaskStore.createSubtask({
+      name: formData.name,
+      task_id: props.taskId,
+      completed: formData.completed ?? false,
+    });
+  } else {
+    await taskStore.createTask(formData);
+  }
+  taskData.value = {};
+  showForm.value = false;
+};
 
 // const emit = defineEmits(["update:modelValue"]);
 // const emit = defineEmits(["newTaskCreated"]);
@@ -56,16 +73,21 @@ defineProps({
 
     <div v-if="showForm && hasForm" class="mb-4 p-4 rounded-lg shadow">
       <form
-        @submit.prevent="
-          taskStore.createTask(taskData);
-          showForm = false;
-        "
-        class="flex space-x-2">
+        @submit.prevent="handleSubmit(taskData)"
+        class="flex items-center space-x-2 max-w-5xl mx-auto">
         <Input
           inputType="text"
-          v-model="taskData.task_name"
-          class="border-gray-300 rounded-lg"
+          v-model="taskData.name"
+          class="border-gray-300 rounded-lg w-full"
           required />
+
+        <!-- input for completed checkbox -->
+        <span v-if="isSubtask" class="size-10">
+          <Input
+            inputType="checkbox"
+            v-model="taskData.completed"
+            class="size-10" />
+        </span>
 
         <!-- Submit form button -->
         <button

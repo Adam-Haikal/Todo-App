@@ -24,7 +24,7 @@ const router = createRouter({
       children: [
         { path: "/", name: "Home", component: HomeView },
         { path: "/tasks", name: "Tasks", component: TasksView },
-        { path: "/tasks/:id", name: "Subtasks", component: SubtasksView },
+        { path: "/subtasks/:id", name: "Subtasks", component: SubtasksView },
         { path: "/important", name: "Important", component: ImportantView },
         { path: "/planned", name: "Planned", component: PlannedView },
         { path: "/assigned", name: "Assigned", component: AssignedView },

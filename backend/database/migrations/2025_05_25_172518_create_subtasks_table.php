@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('subtasks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(App\Models\Task::class)->constrained()->cascadeOnDelete();
-            $table->string('subtask_name')->required();
+            $table->string('name')->required();
             $table->boolean('completed')->default(false);
             $table->dateTime('completed_at')->nullable();
             $table->timestamps();

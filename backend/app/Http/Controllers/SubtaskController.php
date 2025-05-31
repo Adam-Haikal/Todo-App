@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subtask;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class SubtaskController extends Controller
@@ -10,22 +11,19 @@ class SubtaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // // Fetch all tasks with pagination
-        $subtasks = Subtask::latest()
-            ->simplePaginate(15)
-            ->getCollection()
-            ->map(function ($subtasks) {
-                return [
-                    'id' => $subtasks->id,
-                    'subtask_name' => $subtasks->subtask_name,
-                ];
-            });
-        // $tasks = Task::latest()->get();
+        // Display tasks for specific user
+        $taskId = $request->query('task_id');
+
+        $subtasks = Subtask::where('task_id', $taskId)
+            ->whereHas('task', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->latest()
+            ->get();
 
         return response()->json($subtasks);
-        // $list = Task::latest()->simplePaginate(9);
     }
 
     /**
@@ -33,20 +31,25 @@ class SubtaskController extends Controller
      */
     public function store(Request $request)
     {
+        /* Check if the authenticated user owns the parent task */
+        $task = Task::find($request->task_id);
+        if (!$task || $task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to create a subtask for this task'], 403);
+        }
+
         $request->validate([
-            'subtask_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ]);
 
         $completedAt = $request->completed ? now() : null;
 
         $subtask = Subtask::create([
-            'subtask_name' => $request->subtask_name,
-            'task_id' => $request->subtask_id,
+            'name' => $request->name,
+            'task_id' => $request->task_id,
             'completed' => $request->completed,
             'completed_at' => $completedAt,
         ]);
 
-        // return response()->noContent();
         return response()->json(['subtask' => $subtask, 'message' => 'Subtask created successfully'], 201);
     }
 
@@ -55,7 +58,20 @@ class SubtaskController extends Controller
      */
     public function update(Request $request, Subtask $subtask)
     {
-        //
+        // Only allow update if the authenticated user owns the parent task
+        if ($subtask->task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to update this subtask'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $subtask->update([
+            'name' => $request->name,
+        ]);
+
+        return response()->json(['subtask' => $subtask, 'message' => 'Subtask updated successfully'], 200);
     }
 
     /**
@@ -63,12 +79,12 @@ class SubtaskController extends Controller
      */
     public function destroy(Subtask $subtask)
     {
-        // check if task is created by the user, if yes then delete
-        if ($subtask->user_id == auth()->user()->id) {
-            $subtask->delete();
-            // return response()->noContent();
-            return response()->json(['message' => 'Subtask deleted successfully'], 204);
+        /* Only allow delete if the authenticated user owns the parent task */
+        if ($subtask->task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to delete this subtask'], 403);
         }
-        return response()->json(['message' => 'You do not have permission to delete this subtask'], 403);
+
+        $subtask->delete();
+        return response()->json(['message' => 'Subtask deleted successfully'], 204);
     }
 }

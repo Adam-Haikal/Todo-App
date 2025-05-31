@@ -1,12 +1,14 @@
 <script setup>
 import { defineProps, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
+import { useSubtaskStore } from "@/stores/subtask";
 import { Disclosure, DisclosureButton, MenuItem } from "@headlessui/vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import Input from "@/components/Input.vue";
 
 const taskStore = useTaskStore();
+const subtaskStore = useSubtaskStore();
 
 const props = defineProps({
   tasksItem: {
@@ -17,13 +19,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  subTask: {
+  isSubtask: {
     type: Boolean,
     default: false,
   },
 });
 
-const showForm = ref(false); // Show/hide update form
+/* Show/hide update form */
+const showForm = ref(false);
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -35,6 +38,32 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     hour12: true,
   }
 );
+
+const handleUpdate = async (taskItem) => {
+  if (props.isSubtask) {
+    await subtaskStore.updateSubtask(taskItem);
+  } else {
+    await taskStore.updateTask(taskItem);
+  }
+  showForm.value = false;
+};
+
+const handleCancel = (id) => {
+  showForm.value = false;
+  if (props.isSubtask) {
+    subtaskStore.resetSubtaskName(id);
+  } else {
+    taskStore.resetTaskName(id);
+  }
+};
+
+const handleDelete = async (id) => {
+  if (props.isSubtask) {
+    await subtaskStore.deleteSubtask(id);
+  } else {
+    await taskStore.deleteTask(id);
+  }
+};
 </script>
 
 <template>
@@ -42,7 +71,7 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     class="bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200 hover:bg-white/30 flex items-center">
     <!-- Checkbox for completed status -->
     <button
-      v-if="subTask"
+      v-if="isSubtask"
       type="button"
       name="completedButton"
       id="completedButton"
@@ -56,13 +85,13 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     <!-- Task content -->
     <section class="w-full ml-2">
       <!-- Only display if it is task -->
-      <div v-if="!subTask">
+      <div v-if="!isSubtask">
         <router-link :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
           <div class="py-2">
             <p
               name="taskName"
-              class="text-md font-bold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
-              {{ tasksItem.task_name }}
+              class="text-md font-bold text-gray-300 dark:text-gray-900">
+              {{ tasksItem.name }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-600 font-normal">
               Last updated: {{ formattedDate }}
@@ -72,24 +101,20 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
       </div>
 
       <!-- Only display subtask info if it exists -->
-      <div v-if="subTask">
-        <p
-          class="text-md font-semibold text-gray-300 dark:text-gray-900 group-hover:text-blue-500">
-          {{ tasksItem.subtask_name }}
+      <div v-if="isSubtask" class="py-4">
+        <p class="text-md font-semibold text-gray-300 dark:text-gray-900">
+          {{ tasksItem.name }}
         </p>
       </div>
 
+      <!-- Update form -->
       <div v-if="showForm" class="mr-2 mb-2">
-        <form
-          @submit.prevent="
-            taskStore.updateTask(tasksItem);
-            showForm = false;
-          "
-          class="flex space-x-2">
+        <form @submit.prevent="handleUpdate(tasksItem)" class="flex space-x-2">
           <Input
             inputType="text"
-            v-model="tasksItem.task_name"
-            class="rounded-lg" />
+            v-model="tasksItem.name"
+            class="rounded-lg"
+            required />
 
           <!-- Submit form button -->
           <button
@@ -101,17 +126,13 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
           <!-- Close form button -->
           <button
             type="button"
-            @click="
-              showForm = false;
-              taskStore.resetTaskName(tasksItem.id);
-            "
+            @click="handleCancel(tasksItem.id)"
             class="text-gray-500 cursor-pointer hover:text-red-400">
             Cancel
           </button>
         </form>
       </div>
     </section>
-    <!-- Edit section -->
 
     <!-- Dropdown menu button for Edit & Delete -->
     <DropdownMenu elapsed class="">
@@ -132,9 +153,7 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
           </h2>
         </MenuItem>
 
-        <MenuItem
-          v-slot="{ active }"
-          @click="taskStore.deleteTask(tasksItem.id)">
+        <MenuItem v-slot="{ active }" @click="handleDelete(tasksItem.id)">
           <h2
             :class="[
               active ? 'bg-gray-100 outline-hidden' : '',

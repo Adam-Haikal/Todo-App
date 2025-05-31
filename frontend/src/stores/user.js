@@ -37,21 +37,24 @@ export const useUserStore = defineStore("user", {
 
     async login(formData) {
       await axiosClient.get("/sanctum/csrf-cookie");
-      this.clearErrors = {}; // clear old errors
+      /* clear old errors */
+      this.clearErrors();
+
       try {
         await axiosClient.post("/login", formData);
         this.isLoggedIn = true;
         router.push({ name: "Tasks" });
       } catch (error) {
         if (error.response && error.response.status === 422) {
-          this.errors = error.response.data.errors; // Laravel validation errors
+          this.errors = error.response.data.errors;
         }
       }
     },
 
     async register(formData) {
       await axiosClient.get("/sanctum/csrf-cookie");
-      this.clearErrors = {}; // clear old errors
+      this.clearErrors();
+
       try {
         await axiosClient.post("/register", formData);
         this.isLoggedIn = true;
@@ -66,8 +69,11 @@ export const useUserStore = defineStore("user", {
     async logout() {
       try {
         await axiosClient.post("/logout");
-        this.clearUser(); // Clear user data from the store
-        router.push({ name: "Login" }); // Redirect to login page
+        /* Clear user data from the store */
+        this.clearUser();
+
+        /* Redirect to login page */
+        router.push({ name: "Login" });
       } catch (error) {
         console.error("Logout failed", error);
       }
