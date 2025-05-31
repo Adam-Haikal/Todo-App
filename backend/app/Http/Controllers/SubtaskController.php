@@ -55,7 +55,15 @@ class SubtaskController extends Controller
      */
     public function update(Request $request, Subtask $subtask)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $subtask->update([
+            'name' => $request->name,
+        ]);
+
+        return response()->json(['subtask' => $subtask, 'message' => 'Subtask updated successfully'], 200);
     }
 
     /**
