@@ -1,24 +1,29 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import axiosClient from "@/axios";
 import { useRoute } from "vue-router";
 import { useSubtaskStore } from "@/stores/subtask";
 import Header from "@/components/Header.vue";
 import CardItem from "@/components/CardItem.vue";
 import ItemCount from "@/components/ItemCount.vue";
+import Loading from "vue-loading-overlay";
 
 const route = useRoute();
 const subtaskStore = useSubtaskStore();
 
 const taskId = route.params.id;
+const isLoading = ref(false);
+const showOngoing = ref(true);
+const showCompleted = ref(false);
 
 onMounted(async () => {
+  isLoading.value = true;
   try {
     subtaskStore.subtasks = [];
     await subtaskStore.getSubtasks(taskId);
   } catch (error) {
     console.error("Error fetching subtasks:", error);
   }
+  isLoading.value = false;
 });
 </script>
 
@@ -31,32 +36,48 @@ onMounted(async () => {
         <div v-if="subtaskStore.hasSubtasks" class="space-y-6">
           <!-- Display ongoing subtasks -->
           <section>
-            <p class="mb-1">
+            <p class="mb-1 cursor-pointer" @click="showOngoing = !showOngoing">
               Ongoing subtasks
               <ItemCount>{{ subtaskStore.ongoingTasks.length }}</ItemCount>
             </p>
-            <CardItem
-              v-for="subtask in subtaskStore.ongoingTasks"
-              :key="subtask.id"
-              :tasksItem="subtask"
-              isSubtask />
+            <div id="ongoingContainer" v-if="showOngoing">
+              <CardItem
+                id="ongoingSubtasks"
+                v-for="subtask in subtaskStore.ongoingTasks"
+                :key="subtask.id"
+                :tasksItem="subtask"
+                isSubtask
+                class="" />
+            </div>
           </section>
 
           <!-- Display completed subtasks -->
           <section>
-            <p class="mb-1">
+            <p
+              class="mb-1 cursor-pointer"
+              @click="showCompleted = !showCompleted">
               Completed subtasks
               <ItemCount>{{ subtaskStore.completedTasks.length }}</ItemCount>
             </p>
-            <CardItem
-              v-for="subtask in subtaskStore.completedTasks"
-              :key="subtask.id"
-              :tasksItem="subtask"
-              isSubtask />
+            <div id="completedContainer" v-if="showCompleted">
+              <CardItem
+                id="completedSubtasks"
+                v-for="subtask in subtaskStore.completedTasks"
+                :key="subtask.id"
+                :tasksItem="subtask"
+                isSubtask
+                class="" />
+            </div>
           </section>
         </div>
 
-        <p v-if="!subtaskStore.hasSubtasks">No subtasks available.</p>
+        <!-- Display no subtasks message -->
+        <Loading :active="isLoading" color="#1e2939" />
+        <p
+          v-if="!subtaskStore.hasSubtasks && !isLoading"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          No subtasks available.
+        </p>
       </div>
     </main>
   </div>

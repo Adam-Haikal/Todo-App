@@ -3,6 +3,7 @@ import { createPinia } from "pinia";
 import "./style.css";
 import App from "@/App.vue";
 import router from "@/router";
+import "vue-loading-overlay/dist/css/index.css";
 
 const pinia = createPinia();
 
