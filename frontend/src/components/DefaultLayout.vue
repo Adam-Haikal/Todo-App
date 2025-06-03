@@ -17,10 +17,10 @@ const userStore = useUserStore();
 
 const navigation = [
   { name: "Tasks", to: { name: "Tasks" }, current: true },
-  { name: "Important", to: { name: "Important" }, current: false },
-  { name: "Planned", to: { name: "Planned" }, current: false },
-  { name: "Assigned", to: { name: "Assigned" }, current: false },
-  { name: "Flagged", to: { name: "Flagged" }, current: false },
+  // { name: "Important", to: { name: "Important" }, current: false },
+  // { name: "Planned", to: { name: "Planned" }, current: false },
+  // { name: "Assigned", to: { name: "Assigned" }, current: false },
+  // { name: "Flagged", to: { name: "Flagged" }, current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", to: { name: "Tasks" } },

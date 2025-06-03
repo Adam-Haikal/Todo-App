@@ -65,11 +65,20 @@ class SubtaskController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'completed' => 'sometimes|boolean',
+            'completed_at' => 'nullable|date',
         ]);
 
-        $subtask->update([
+        $updatedData = [
             'name' => $request->name,
-        ]);
+        ];
+
+        if ($request->has('completed')) {
+            $updatedData['completed'] = $request->completed;
+            $updatedData['completed_at'] = $request->completed ? now() : null;
+        }
+
+        $subtask->update($updatedData);
 
         return response()->json(['subtask' => $subtask, 'message' => 'Subtask updated successfully'], 200);
     }

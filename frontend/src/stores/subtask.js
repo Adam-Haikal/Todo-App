@@ -9,10 +9,10 @@ export const useSubtaskStore = defineStore("subtask", {
   getters: {
     /* Check if any task exists */
     hasSubtasks: (state) => state.subtasks && state.subtasks.length > 0,
+    /* Get pending tasks */
+    ongoingTasks: (state) => state.subtasks.filter((task) => !task.completed),
     /* Get completed tasks */
     completedTasks: (state) => state.subtasks.filter((task) => task.completed),
-    /* Get pending tasks */
-    pendingTasks: (state) => state.subtasks.filter((task) => !task.completed),
   },
 
   actions: {
@@ -76,6 +76,27 @@ export const useSubtaskStore = defineStore("subtask", {
         );
       } catch (error) {
         console.error("Error deleting task:", error);
+      }
+    },
+
+    /* Toggle subtask completion status */
+    async toggleSubtaskCompletion(subtaskId) {
+      const subtask = this.subtasks.find((subtask) => subtask.id === subtaskId);
+      if (subtask) {
+        // subtask.completed = !subtask.completed;
+        try {
+          await axiosClient.put(`/api/subtasks/${subtaskId}`, {
+            name: subtask.name,
+            completed: !subtask.completed,
+          });
+          // Re-fetch all subtasks for the current task to ensure state is in sync
+          if (subtask.task_id) {
+            await this.getSubtasks(subtask.task_id);
+          }
+        } catch (error) {
+          subtask.completed = !subtask.completed; // revert if error
+          console.error("Error toggling subtask completion:", error);
+        }
       }
     },
   },

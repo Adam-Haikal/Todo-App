@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DefaultLayout from "@/components/DefaultLayout.vue";
 import GuestLayout from "@/components/GuestLayout.vue";
-import NotFound from "@/views/NotFound.vue";
-import HomeView from "@/views/HomeView.vue";
+import NotFound from "@/views/errors/NotFound.vue";
 import TasksView from "@/views/TasksView.vue";
 import SubtasksView from "@/views/SubtasksView.vue";
 import ForgotPassword from "@/views/auth/ForgotPassword.vue";
@@ -22,7 +21,6 @@ const router = createRouter({
       component: DefaultLayout,
       meta: { requiresAuth: true },
       children: [
-        { path: "/", name: "Home", component: HomeView },
         { path: "/tasks", name: "Tasks", component: TasksView },
         { path: "/subtasks/:id", name: "Subtasks", component: SubtasksView },
         { path: "/important", name: "Important", component: ImportantView },
@@ -32,6 +30,7 @@ const router = createRouter({
       ],
       beforeEnter: async (to, from, next) => {
         try {
+          if (to.path === "/") return next({ name: "Tasks" });
           const userStore = useUserStore();
           await userStore.fetchUser();
           next();

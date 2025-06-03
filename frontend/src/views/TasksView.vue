@@ -9,6 +9,7 @@ const taskStore = useTaskStore();
 
 onMounted(async () => {
   try {
+    taskStore.tasks = [];
     await taskStore.getTasks();
   } catch (error) {
     console.error("Error fetching tasks:", error);

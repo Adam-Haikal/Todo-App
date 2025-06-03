@@ -2,9 +2,9 @@
 import { defineProps, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
-import { Disclosure, DisclosureButton, MenuItem } from "@headlessui/vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
+import DropdownItem from "@/components/DropdownItem.vue";
 import Input from "@/components/Input.vue";
 
 const taskStore = useTaskStore();
@@ -15,10 +15,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  isCompleted: {
-    type: Boolean,
-    default: false,
-  },
   isSubtask: {
     type: Boolean,
     default: false,
@@ -27,6 +23,7 @@ const props = defineProps({
 
 /* Show/hide update form */
 const showForm = ref(false);
+const togglingSubtaskId = ref(null);
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -38,6 +35,12 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     hour12: true,
   }
 );
+
+const handleToggle = async (subtaskId) => {
+  togglingSubtaskId.value = subtaskId;
+  await subtaskStore.toggleSubtaskCompletion(subtaskId);
+  togglingSubtaskId.value = null;
+};
 
 const handleUpdate = async (taskItem) => {
   if (props.isSubtask) {
@@ -68,7 +71,10 @@ const handleDelete = async (id) => {
 
 <template>
   <div
-    class="bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200 hover:bg-white/30 flex items-center">
+    :class="[
+      !isSubtask ? 'hover:bg-white/30' : '',
+      'bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200  flex items-center',
+    ]">
     <!-- Checkbox for completed status -->
     <span :class="[!showForm ? 'inline-flex' : 'mb-14']">
       <button
@@ -76,11 +82,13 @@ const handleDelete = async (id) => {
         type="button"
         name="completedButton"
         id="completedButton"
+        :disabled="togglingSubtaskId === tasksItem.id"
+        @click="handleToggle(tasksItem.id)"
         :class="[
-          isCompleted
+          tasksItem.completed
             ? 'bg-green-500 border-green-600'
             : 'bg-gray-100 border-gray-300',
-          'h-5 w-5 rounded-full border-2 appearance-none',
+          'h-5 w-5 rounded-full border-2 appearance-none hover:cursor-pointer',
         ]" />
     </span>
 
@@ -89,17 +97,19 @@ const handleDelete = async (id) => {
       <div>
         <!-- Display normal text if not in edit mode, otherwise display form -->
         <template v-if="!showForm">
-          <router-link :to="{ name: 'Subtasks', params: { id: tasksItem.id } }">
-            <div class="py-2">
-              <p
-                name="taskName"
-                :class="[
-                  !isSubtask ? 'font-bold' : 'font-semibold',
-                  'text-md text-gray-300 dark:text-gray-900',
-                ]">
-                {{ tasksItem.name }}
-              </p>
-            </div>
+          <router-link
+            @mousedown.prevent
+            :class="[isSubtask ? 'font-semibold cursor-default' : 'font-bold']"
+            :to="
+              isSubtask
+                ? {}
+                : { name: 'Subtasks', params: { id: tasksItem.id } }
+            ">
+            <p
+              name="taskName"
+              class="py-2 text-md text-gray-300 dark:text-gray-900">
+              {{ tasksItem.name }}
+            </p>
           </router-link>
         </template>
 
@@ -135,7 +145,7 @@ const handleDelete = async (id) => {
     </section>
 
     <!-- Dropdown menu button for Edit & Delete -->
-    <DropdownMenu elapsed class="">
+    <DropdownMenu elapsed>
       <!-- Ellipsis Vertical Icon -->
       <template #menuIcon>
         <EllipsisVerticalIcon class="block size-6" aria-hidden="true" />
@@ -143,25 +153,9 @@ const handleDelete = async (id) => {
 
       <!-- Dropdown menu items -->
       <template #default>
-        <MenuItem v-slot="{ active }" @click="showForm = !showForm">
-          <h2
-            :class="[
-              active ? 'bg-gray-100 outline-hidden' : '',
-              'block px-4 py-2 text-sm text-gray-700 z-10 ',
-            ]">
-            Edit
-          </h2>
-        </MenuItem>
+        <DropdownItem @click="showForm = !showForm">Edit</DropdownItem>
 
-        <MenuItem v-slot="{ active }" @click="handleDelete(tasksItem.id)">
-          <h2
-            :class="[
-              active ? 'bg-gray-100 outline-hidden' : '',
-              'block px-4 py-2 text-sm text-gray-700 border-t-2 border-gray-200',
-            ]">
-            Delete
-          </h2>
-        </MenuItem>
+        <DropdownItem @click="handleDelete(tasksItem.id)">Delete</DropdownItem>
       </template>
     </DropdownMenu>
   </div>
