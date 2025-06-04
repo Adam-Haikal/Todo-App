@@ -46,7 +46,11 @@ const formData = ref({
           </router-link>
         </p>
 
-        <Button type="submit">Login</Button>
+        <Button
+          type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2"
+          >Login</Button
+        >
       </form>
     </div>
   </div>

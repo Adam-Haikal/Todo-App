@@ -32,7 +32,7 @@ const userNavigation = [
 <template>
   <div class="min-h-full">
     <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
             <!-- Logo -->
@@ -91,7 +91,10 @@ const userNavigation = [
               </template>
               <template v-else>
                 <div
-                  class="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                  :class="[
+                    active ? 'bg-gray-100 outline-hidden' : '',
+                    'block px-4 py-2 text-sm text-gray-700 cursor-pointer',
+                  ]"
                   @click="item.onClick">
                   {{ item.name }}
                 </div>
@@ -102,7 +105,7 @@ const userNavigation = [
           <!-- Mobile menu button (X)-->
           <div class="-mr-2 flex md:hidden">
             <DisclosureButton
-              class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+              class="cursor-pointer relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
               <span class="absolute -inset-0.5" />
               <span class="sr-only">Open main menu</span>
               <Bars3Icon v-if="!open" class="block size-6" aria-hidden="true" />

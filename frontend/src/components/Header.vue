@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from "vue";
+import { RouterLink } from "vue-router";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
-import { PlusIcon } from "@heroicons/vue/24/outline";
+import { PlusIcon, ChevronLeftIcon } from "@heroicons/vue/24/outline";
 import Input from "@/components/Input.vue";
+import Button from "@/components/Button.vue";
 
 const taskStore = useTaskStore();
 const subtaskStore = useSubtaskStore();
@@ -53,25 +55,30 @@ const handleSubmit = async (formData) => {
   <section>
     <header class="bg-white shadow-sm">
       <div
-        class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8 justify-between flex items-center">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">
-          {{ title }}
-        </h1>
+        class="mx-auto px-4 py-3 sm:px-6 lg:px-8 justify-between flex items-center">
+        <!-- Back button -->
+        <RouterLink
+          :to="isSubtask ? { name: 'Tasks' } : {}"
+          class="inline-flex gap-2 group items-center">
+          <ChevronLeftIcon
+            v-if="isSubtask"
+            class="bg-indigo-600 group-hover:bg-indigo-500 text-white size-8 rounded-md" />
+          <h1
+            class="text-3xl font-bold tracking-tight text-gray-900 group-hover:text-gray-700">
+            {{ title }}
+          </h1>
+        </RouterLink>
 
         <!-- Show fom button -->
-        <button
-          v-if="hasForm"
-          type="button"
-          class="cursor-pointer"
-          @click="showForm = !showForm">
+        <button v-if="hasForm" type="button" @click="showForm = !showForm">
           <PlusIcon
-            class="h-8 p-1 w-8 bg-teal-400 text-white rounded-lg inline-flex stroke-2"
+            class="h-8 p-1 w-8 bg-teal-400 text-white rounded-lg inline-flex stroke-2 cursor-pointer"
             aria-hidden="true" />
         </button>
       </div>
     </header>
 
-    <div v-if="showForm && hasForm" class="mb-4 p-4 rounded-lg shadow">
+    <div v-if="showForm && hasForm" class="p-4 rounded-lg shadow">
       <form
         @submit.prevent="handleSubmit(taskData)"
         class="flex items-center space-x-2 max-w-5xl mx-auto">
@@ -90,19 +97,19 @@ const handleSubmit = async (formData) => {
         </span>
 
         <!-- Submit form button -->
-        <button
+        <Button
           type="submit"
-          class="bg-teal-500 p-1 rounded-lg text-white text-xs cursor-pointer">
-          Add Task
-        </button>
+          class="bg-teal-500 p-2 rounded-lg text-white cursor-pointer text-sm">
+          Create
+        </Button>
 
         <!-- Close form button -->
-        <button
+        <Button
           type="button"
           @click="showForm = false"
-          class="text-gray-500 cursor-pointer hover:text-red-400">
+          class="text-gray-500 cursor-pointer hover:text-red-400 text-sm">
           Cancel
-        </button>
+        </Button>
       </form>
     </div>
   </section>

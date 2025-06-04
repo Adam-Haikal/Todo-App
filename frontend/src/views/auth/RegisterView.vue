@@ -26,7 +26,9 @@ const formData = ref({
       <div v-if="userStore.hasErrors">
         <ul class="text-red-600 bg-red-100 p-4 rounded-md my-2">
           <li v-for="(error, index) in userStore.errors" :key="index">
-            <p v-for="(message, i) in error" :key="i" class="text-center">{{ message }}</p>
+            <p v-for="(message, i) in error" :key="i" class="text-center">
+              {{ message }}
+            </p>
           </li>
         </ul>
       </div>
@@ -57,7 +59,11 @@ const formData = ref({
           </router-link>
         </p>
 
-        <Button type="submit">Register</Button>
+        <Button
+          type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2">
+          Register
+        </Button>
       </form>
     </div>
   </div>

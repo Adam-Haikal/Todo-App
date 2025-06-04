@@ -6,6 +6,7 @@ import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "@/components/DropdownItem.vue";
 import Input from "@/components/Input.vue";
+import Button from "@/components/Button.vue";
 
 const taskStore = useTaskStore();
 const subtaskStore = useSubtaskStore();
@@ -97,7 +98,7 @@ const handleDelete = async (id) => {
       <div>
         <!-- Display normal text if not in edit mode, otherwise display form -->
         <template v-if="!showForm">
-          <router-link
+          <RouterLink
             @mousedown.prevent
             :class="[isSubtask ? 'font-semibold cursor-default' : 'font-bold']"
             :to="
@@ -110,7 +111,7 @@ const handleDelete = async (id) => {
               class="py-2 text-md text-gray-300 dark:text-gray-900">
               {{ tasksItem.name }}
             </p>
-          </router-link>
+          </RouterLink>
         </template>
 
         <template v-else>
@@ -121,18 +122,18 @@ const handleDelete = async (id) => {
                 v-model="tasksItem.name"
                 class="rounded-lg" />
 
-              <span class="flex mt-1 justify-end space-x-2">
-                <button
+              <span class="flex mt-1 justify-end items-center space-x-2">
+                <Button
                   type="submit"
-                  class="bg-teal-500 p-2 rounded-lg text-white text-xs cursor-pointer">
+                  class="bg-teal-500 p-2 rounded-lg text-white text-sm cursor-pointer">
                   Save
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   @click="handleCancel(tasksItem.id)"
-                  class="text-gray-500 cursor-pointer hover:text-red-400">
+                  class="text-gray-500 cursor-pointer hover:text-red-400 text-sm">
                   Cancel
-                </button>
+                </Button>
               </span>
             </form>
           </div>
