@@ -39,11 +39,13 @@ onMounted(async () => {
     <Header :title="task.name" :taskId="taskId" hasForm isSubtask />
 
     <main>
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div class="mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
         <div v-if="subtaskStore.hasSubtasks" class="space-y-6">
           <!-- Display ongoing subtasks -->
           <section>
-            <p class="mb-1 cursor-pointer" @click="showOngoing = !showOngoing">
+            <p
+              class="mb-1 cursor-pointer hover:text-gray-700 hover:underline"
+              @click="showOngoing = !showOngoing">
               Ongoing subtasks
               <ItemCount>{{ subtaskStore.ongoingTasks.length }}</ItemCount>
             </p>
@@ -61,7 +63,7 @@ onMounted(async () => {
           <!-- Display completed subtasks -->
           <section>
             <p
-              class="mb-1 cursor-pointer"
+              class="mb-1 cursor-pointer hover:text-gray-700 hover:underline"
               @click="showCompleted = !showCompleted">
               Completed subtasks
               <ItemCount>{{ subtaskStore.completedTasks.length }}</ItemCount>

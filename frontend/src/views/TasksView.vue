@@ -28,7 +28,7 @@ onMounted(async () => {
 
     <!-- Display tasks -->
     <main>
-      <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <section class="mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
         <CardItem
           v-for="task in taskStore.tasks"
           :key="task.id"
