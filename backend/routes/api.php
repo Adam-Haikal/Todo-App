@@ -10,6 +10,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return $request->user();
     });
 
-    Route::apiResource('tasks', TaskController::class)->only('index', 'store', 'update', 'destroy');
+    Route::apiResource('tasks', TaskController::class)->only('index', 'store', 'update', 'destroy', 'show');
     Route::apiResource('subtasks', SubtaskController::class)->only('index', 'store', 'update', 'destroy');
 });

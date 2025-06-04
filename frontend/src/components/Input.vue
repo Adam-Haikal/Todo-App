@@ -1,6 +1,4 @@
 <script setup>
-import { defineModel } from "vue";
-
 /* replaces modelValue + update:modelValue */
 const data = defineModel();
 const props = defineProps({

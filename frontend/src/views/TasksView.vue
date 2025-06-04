@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
 import CardItem from "@/components/CardItem.vue";
 import Header from "@/components/Header.vue";
-import Loading from "vue-loading-overlay";
+import { HalfCircleSpinner } from "epic-spinners";
 
 // Import the task store
 const taskStore = useTaskStore();
@@ -12,8 +12,8 @@ const isLoading = ref(false);
 
 onMounted(async () => {
   isLoading.value = true;
+  taskStore.tasks = [];
   try {
-    taskStore.tasks = [];
     await taskStore.getTasks();
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -24,7 +24,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <Header hasForm />
+    <Header title="Tasks" hasForm />
 
     <!-- Display tasks -->
     <main>
@@ -35,12 +35,15 @@ onMounted(async () => {
           :tasksItem="task" />
 
         <!-- Display no tasks message -->
-        <Loading :active="isLoading" color="#1e2939" />
-        <p
-          v-if="!taskStore.hasTasks && !isLoading"
+        <div
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          No tasks available.
-        </p>
+          <HalfCircleSpinner
+            v-if="isLoading"
+            :animation-duration="1000"
+            :size="60"
+            :color="'#1e2939'" />
+          <p v-if="!taskStore.hasTasks && !isLoading">No tasks available.</p>
+        </div>
 
         <!-- Pagination links -->
       </section>

@@ -15,7 +15,7 @@ const taskData = ref({});
 const props = defineProps({
   title: {
     type: String,
-    default: "Tasks",
+    // default: "Tasks",
   },
   hasForm: {
     type: Boolean,
