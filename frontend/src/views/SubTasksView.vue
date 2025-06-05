@@ -43,12 +43,12 @@ onMounted(async () => {
         <div v-if="subtaskStore.hasSubtasks" class="space-y-6">
           <!-- Display ongoing subtasks -->
           <section>
-            <p
+            <span
               class="mb-1 cursor-pointer hover:text-gray-700 hover:underline"
               @click="showOngoing = !showOngoing">
               Ongoing subtasks
               <ItemCount>{{ subtaskStore.ongoingTasks.length }}</ItemCount>
-            </p>
+            </span>
             <div id="ongoingContainer" v-if="showOngoing">
               <CardItem
                 id="ongoingSubtasks"
@@ -62,12 +62,12 @@ onMounted(async () => {
 
           <!-- Display completed subtasks -->
           <section>
-            <p
+            <span
               class="mb-1 cursor-pointer hover:text-gray-700 hover:underline"
               @click="showCompleted = !showCompleted">
               Completed subtasks
               <ItemCount>{{ subtaskStore.completedTasks.length }}</ItemCount>
-            </p>
+            </span>
             <div id="completedContainer" v-if="showCompleted">
               <CardItem
                 id="completedSubtasks"

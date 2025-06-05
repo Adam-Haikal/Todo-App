@@ -1,18 +1,15 @@
 <script setup>
-import { ref } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
+import { useClickOutside } from "@/composables/useClickOutside";
 import { PlusIcon, ChevronLeftIcon } from "@heroicons/vue/24/outline";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 
 const taskStore = useTaskStore();
 const subtaskStore = useSubtaskStore();
-
-/* Show/hide create form */
-const showForm = ref(false);
-const taskData = ref({});
 
 const props = defineProps({
   title: {
@@ -32,6 +29,20 @@ const props = defineProps({
     required: false,
   },
 });
+
+const taskData = ref({});
+/* Show/hide create form */
+const showForm = ref(false);
+const headerRef = ref(null);
+
+/* Close form on click outside the card*/
+useClickOutside(
+  headerRef,
+  () => {
+    showForm.value = false;
+  },
+  showForm
+);
 
 const handleSubmit = async (formData) => {
   if (props.isSubtask) {
@@ -78,7 +89,10 @@ const handleSubmit = async (formData) => {
       </div>
     </header>
 
-    <div v-if="showForm && hasForm" class="p-4 rounded-lg shadow">
+    <div
+      v-if="showForm && hasForm"
+      ref="headerRef"
+      class="p-4 rounded-lg shadow">
       <form
         @submit.prevent="handleSubmit(taskData)"
         class="flex items-center space-x-2 max-w-5xl mx-auto">

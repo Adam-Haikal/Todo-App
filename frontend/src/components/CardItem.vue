@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
+import { useClickOutside } from "@/composables/useClickOutside";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "@/components/DropdownItem.vue";
@@ -22,9 +23,6 @@ const props = defineProps({
   },
 });
 
-/* Show/hide update form */
-const showForm = ref(false);
-const togglingSubtaskId = ref(null);
 const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
   "en-GB",
   {
@@ -35,6 +33,20 @@ const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
     minute: "2-digit",
     hour12: true,
   }
+);
+
+/* Show/hide update form */
+const showForm = ref(false);
+const cardRef = ref(null);
+const togglingSubtaskId = ref(null);
+
+/* Close form on click outside the card*/
+useClickOutside(
+  cardRef,
+  () => {
+    showForm.value = false;
+  },
+  showForm
 );
 
 const handleToggle = async (subtaskId) => {
@@ -72,6 +84,7 @@ const handleDelete = async (id) => {
 
 <template>
   <div
+    ref="cardRef"
     :class="[
       !isSubtask ? 'hover:bg-white/30' : '',
       'bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200  flex items-center',
