@@ -28,7 +28,7 @@ onMounted(async () => {
 
     <!-- Display tasks -->
     <main>
-      <section class="mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
+      <section class="relative mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
         <CardItem
           v-for="task in taskStore.tasks"
           :key="task.id"
@@ -36,7 +36,7 @@ onMounted(async () => {
 
         <!-- Display no tasks message -->
         <div
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          class="absolute top-[250px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10">
           <HalfCircleSpinner
             v-if="isLoading"
             :animation-duration="1000"

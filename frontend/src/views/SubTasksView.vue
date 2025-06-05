@@ -39,7 +39,7 @@ onMounted(async () => {
     <Header :title="task.name" :taskId="taskId" hasForm isSubtask />
 
     <main>
-      <div class="mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
+      <div class="relative mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
         <div v-if="subtaskStore.hasSubtasks" class="space-y-6">
           <!-- Display ongoing subtasks -->
           <section>
@@ -82,7 +82,7 @@ onMounted(async () => {
 
         <!-- Display no subtasks message -->
         <div
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          class="absolute top-[250px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10">
           <HalfCircleSpinner
             v-if="isLoading"
             :animation-duration="1000"

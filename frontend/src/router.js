@@ -21,31 +21,31 @@ const router = createRouter({
       component: DefaultLayout,
       meta: { requiresAuth: true },
       children: [
-        { path: "/tasks", name: "Tasks", component: TasksView },
-        { path: "/subtasks/:id", name: "Subtasks", component: SubtasksView },
-        { path: "/important", name: "Important", component: ImportantView },
-        { path: "/planned", name: "Planned", component: PlannedView },
-        { path: "/assigned", name: "Assigned", component: AssignedView },
-        { path: "/flagged", name: "Flagged", component: FlaggedView },
+        { path: "tasks", name: "Tasks", component: TasksView },
+        { path: "subtasks/:id", name: "Subtasks", component: SubtasksView },
+        { path: "important", name: "Important", component: ImportantView },
+        { path: "planned", name: "Planned", component: PlannedView },
+        { path: "assigned", name: "Assigned", component: AssignedView },
+        { path: "flagged", name: "Flagged", component: FlaggedView },
       ],
-      beforeEnter: async (to, from, next) => {
-        try {
-          if (to.path === "/") return next({ name: "Tasks" });
-          const userStore = useUserStore();
-          await userStore.fetchUser();
-          next();
-        } catch (error) {
-          next({ name: "Login" });
-        }
-      },
+      // beforeEnter: async (to, from, next) => {
+      //   try {
+      //     if (to.path === "/") return next({ name: "Tasks" });
+      //     const userStore = useUserStore();
+      //     await userStore.fetchUser();
+      //     next();
+      //   } catch (error) {
+      //     next({ name: "Login" });
+      //   }
+      // },
     },
     {
       path: "/",
       component: GuestLayout,
       meta: { requiresGuest: true },
       children: [
-        { path: "/login", name: "Login", component: LoginView },
-        { path: "/register", name: "Register", component: RegisterView },
+        { path: "login", name: "Login", component: LoginView },
+        { path: "register", name: "Register", component: RegisterView },
       ],
     },
 
@@ -62,27 +62,33 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   const userStore = useUserStore();
-//   // Check if the route requires authentication
-//   // and if the user is not logged in, redirect to login
-//   if (
-//     to.matched.some((record) => record.meta.requiresAuth) &&
-//     !userStore.isLoggedIn
-//   ) {
-//     // userStore.isLoggedIn = false;
-//     next({ name: "Login" });
-//   }
-//   // If the route requires guest access and the user is logged in, redirect to tasks
-//   else if (
-//     to.matched.some((record) => record.meta.requiresGuest) &&
-//     userStore.isLoggedIn
-//   ) {
-//     // userStore.isLoggedIn = true;
-//     next({ name: "Tasks" });
-//   }
-//   // Otherwise, proceed to the route
-//   else next();
-// });
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+
+  // Check if the route requires authentication
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    try {
+      /* Only fetch user if not already loaded */
+      if (!userStore.user) {
+        await userStore.fetchUser();
+      }
+      next();
+    } catch (error) {
+      next({ name: "Login" });
+    }
+  }
+  // If route requires guest (not logged in)
+  else if (to.matched.some((record) => record.meta.requiresGuest)) {
+    if (userStore.user) {
+      next({ name: "Tasks" });
+    } else {
+      next();
+    }
+  }
+  // Otherwise, proceed
+  else {
+    next();
+  }
+});
 
 export default router;
