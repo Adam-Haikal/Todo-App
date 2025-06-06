@@ -28,16 +28,6 @@ const router = createRouter({
         { path: "assigned", name: "Assigned", component: AssignedView },
         { path: "flagged", name: "Flagged", component: FlaggedView },
       ],
-      // beforeEnter: async (to, from, next) => {
-      //   try {
-      //     if (to.path === "/") return next({ name: "Tasks" });
-      //     const userStore = useUserStore();
-      //     await userStore.fetchUser();
-      //     next();
-      //   } catch (error) {
-      //     next({ name: "Login" });
-      //   }
-      // },
     },
     {
       path: "/",
@@ -62,33 +52,69 @@ const router = createRouter({
   ],
 });
 
+let userFetched = false;
+
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
 
-  // Check if the route requires authentication
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
+  /* Ensure user is fetched once */
+  if (!userStore.user && !userFetched) {
+    userFetched = true;
     try {
-      /* Only fetch user if not already loaded */
-      if (!userStore.user) {
-        await userStore.fetchUser();
-      }
-      next();
+      await userStore.fetchUser();
     } catch (error) {
-      next({ name: "Login" });
+      userStore.clearUser();
     }
   }
-  // If route requires guest (not logged in)
-  else if (to.matched.some((record) => record.meta.requiresGuest)) {
-    if (userStore.user) {
+
+  const isAuthenticated = userStore.user;
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    /* Redirect unauthenticated user to login */
+    if (!isAuthenticated) {
+      next({ name: "Login" });
+    } else {
+      next();
+    }
+  } else if (to.matched.some((record) => record.meta.requiresGuest)) {
+    /* Redirect authenticated user away from login/register */
+    if (isAuthenticated) {
       next({ name: "Tasks" });
     } else {
       next();
     }
-  }
-  // Otherwise, proceed
-  else {
+  } else {
     next();
   }
 });
+
+// router.beforeEach(async (to, from, next) => {
+//   const userStore = useUserStore();
+
+//   // Check if the route requires authentication
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     try {
+//       /* Only fetch user if not already loaded */
+//       if (!userStore.user) {
+//         await userStore.fetchUser();
+//       }
+//       next();
+//     } catch (error) {
+//       next({ name: "Login" });
+//     }
+//   }
+//   // If route requires guest (not logged in)
+//   else if (to.matched.some((record) => record.meta.requiresGuest)) {
+//     if (userStore.user) {
+//       next({ name: "Tasks" });
+//     } else {
+//       next();
+//     }
+//   }
+//   // Otherwise, proceed
+//   else {
+//     next();
+//   }
+// });
 
 export default router;

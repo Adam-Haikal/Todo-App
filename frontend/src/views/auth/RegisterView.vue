@@ -52,11 +52,7 @@ const formData = ref({
             Go to login
           </router-link>
 
-          <router-link
-            to="{ name: 'ForgotPassword' }"
-            class="flex justify-center font-semibold text-indigo-600 hover:text-indigo-500">
-            Forgot password
-          </router-link>
+          
         </p>
 
         <Button

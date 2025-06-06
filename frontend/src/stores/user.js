@@ -5,7 +5,6 @@ import router from "@/router";
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
-    isLoggedIn: false,
     errors: {},
   }),
 
@@ -18,7 +17,6 @@ export const useUserStore = defineStore("user", {
   actions: {
     clearUser() {
       this.user = null;
-      this.isLoggedIn = false;
     },
 
     clearErrors() {
@@ -29,8 +27,10 @@ export const useUserStore = defineStore("user", {
       try {
         const response = await axiosClient.get("/api/user");
         this.user = response.data;
-        this.isLoggedIn = true;
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          this.clearUser(); // Clear user if unauthorized
+        }
         // console.error("Error fetching user:", error);
       }
     },
@@ -42,7 +42,7 @@ export const useUserStore = defineStore("user", {
 
       try {
         await axiosClient.post("/login", formData);
-        this.isLoggedIn = true;
+        await this.fetchUser();
         router.push({ name: "Tasks" });
       } catch (error) {
         if (error.response && error.response.status === 422) {
@@ -53,11 +53,12 @@ export const useUserStore = defineStore("user", {
 
     async register(formData) {
       await axiosClient.get("/sanctum/csrf-cookie");
+      /* clear old errors */
       this.clearErrors();
 
       try {
         await axiosClient.post("/register", formData);
-        this.isLoggedIn = true;
+        await this.fetchUser();
         router.push({ name: "Tasks" });
       } catch (error) {
         if (error.response && error.response.status === 422) {

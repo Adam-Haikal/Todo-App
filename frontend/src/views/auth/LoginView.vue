@@ -44,13 +44,19 @@ const formData = ref({
             class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">
             Create an account
           </router-link>
+
+          <router-link
+            to="{ name: 'ForgotPassword' }"
+            class="flex justify-center font-semibold text-indigo-600 hover:text-indigo-500">
+            Forgot password
+          </router-link>
         </p>
 
         <Button
           type="submit"
-          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2"
-          >Login</Button
-        >
+          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2">
+          Login
+        </Button>
       </form>
     </div>
   </div>
