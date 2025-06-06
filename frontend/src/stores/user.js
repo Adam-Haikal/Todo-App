@@ -29,7 +29,7 @@ export const useUserStore = defineStore("user", {
         this.user = response.data;
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          this.clearUser(); // Clear user if unauthorized
+          this.clearUser();
         }
         // console.error("Error fetching user:", error);
       }
@@ -62,7 +62,7 @@ export const useUserStore = defineStore("user", {
         router.push({ name: "Tasks" });
       } catch (error) {
         if (error.response && error.response.status === 422) {
-          this.errors = error.response.data.errors; // Laravel validation errors
+          this.errors = error.response.data.errors;
         }
       }
     },
@@ -73,7 +73,6 @@ export const useUserStore = defineStore("user", {
         /* Clear user data from the store */
         this.clearUser();
 
-        /* Redirect to login page */
         router.push({ name: "Login" });
       } catch (error) {
         console.error("Logout failed", error);

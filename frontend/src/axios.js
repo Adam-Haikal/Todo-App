@@ -20,7 +20,7 @@ axiosClient.interceptors.response.use(
       case 401:
         // Handle authentication errors
         userStore.clearUser();
-        router.push({ name: "Login" });
+        // router.push({ name: "Login" }); /* Redirect already handled by route guard */
         break;
       case 404:
         // Handle not found errors
