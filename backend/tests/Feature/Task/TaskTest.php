@@ -19,11 +19,11 @@ test('users can view tasks created by them only', function () {
 
 test('users can create tasks', function () {
     $user = User::factory()->create();
-    $response = $this->actingAs($user)->post('/api/tasks', [
-        'name' => 'Test Task',
-    ]);
 
-    $response
+    $this->actingAs($user)
+        ->post('/api/tasks', [
+            'name' => 'Test Task',
+        ])
         ->assertJsonFragment([
             'name' => 'Test Task',
             'user_id' => $user->id,
@@ -39,11 +39,10 @@ test('users can update tasks', function () {
     $user = User::factory()->create();
     $task = Task::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->put('/api/tasks/' . $task->id, [
-        'name' => 'Updated Task',
-    ]);
-
-    $response
+    $this->actingAs($user)
+        ->put('/api/tasks/' . $task->id, [
+            'name' => 'Updated Task',
+        ])
         ->assertJsonFragment([
             'name' => 'Updated Task',
         ])
@@ -58,9 +57,9 @@ test('users can delete tasks', function () {
     $user = User::factory()->create();
     $task = Task::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->delete('/api/tasks/' . $task->id);
-
-    $response->assertStatus(204);
+    $this->actingAs($user)
+        ->delete('/api/tasks/' . $task->id)
+        ->assertStatus(204);
 
     $this->assertDatabaseMissing('tasks', [
         'id' => $task->id,
