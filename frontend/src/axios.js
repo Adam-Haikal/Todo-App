@@ -22,6 +22,10 @@ axiosClient.interceptors.response.use(
         userStore.clearUser();
         // router.push({ name: "Login" }); /* Redirect already handled by route guard */
         break;
+      case 403:
+        // Handle forbidden errors
+        router.push({ name: "Forbidden" });
+        break;
       case 404:
         // Handle not found errors
         router.push({ name: "NotFound" });
@@ -34,7 +38,7 @@ axiosClient.interceptors.response.use(
       case 500:
         // Handle internal server errors
         console.error("Internal Server Error:", error.response.data);
-        router.push({ name: "InternalServerError" });
+        router.push({ name: "ServerError" });
         break;
       default:
         // Handle other errors

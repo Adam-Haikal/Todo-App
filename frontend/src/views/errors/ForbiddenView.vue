@@ -1,5 +1,5 @@
 <script setup></script>
 
 <template>
-  <div>404 Not Found</div>
+  <div>403 Forbidden</div>
 </template>

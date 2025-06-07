@@ -68,7 +68,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        // Authorization: Only allow if user owns the task
+        /* Authorization: Only allow if user owns the task */
         if ($task->user_id !== auth()->id()) {
             return response()->json(['message' => 'You do not have permission to delete this task'], 403);
         }
@@ -79,6 +79,11 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        /* Check if the authenticated user is the owner */
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return response()->json($task);
     }
 }

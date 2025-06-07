@@ -13,9 +13,17 @@ class SubtaskController extends Controller
      */
     public function index(Request $request)
     {
-        // Display tasks for specific user
         $taskId = $request->query('task_id');
 
+        /* Check if the task exists */
+        $task = Task::find($taskId);
+
+        /* Check if the task exists and belongs to the authenticated user */
+        if (!$task || $task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'You do not have permission to view subtasks for this task'], 403);
+        }
+
+        /* Display tasks for specific user */
         $subtasks = Subtask::where('task_id', $taskId)
             ->whereHas('task', function ($query) {
                 $query->where('user_id', auth()->id());
@@ -58,7 +66,7 @@ class SubtaskController extends Controller
      */
     public function update(Request $request, Subtask $subtask)
     {
-        // Only allow update if the authenticated user owns the parent task
+        /* Only allow update if the authenticated user owns the parent task */
         if ($subtask->task->user_id !== auth()->id()) {
             return response()->json(['message' => 'You do not have permission to update this subtask'], 403);
         }

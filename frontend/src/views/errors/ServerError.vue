@@ -1,5 +1,5 @@
 <script setup></script>
 
 <template>
-  <div>404 Not Found</div>
+  <div>Internal Server Error</div>
 </template>

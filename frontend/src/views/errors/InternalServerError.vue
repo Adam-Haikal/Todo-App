@@ -1,7 +1,0 @@
-<script lang="ts" setup>
-
-</script>
-
-<template>
-    <div>Internal Server Error</div>
-</template>

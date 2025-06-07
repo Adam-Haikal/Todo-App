@@ -1,17 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/stores/user";
 import DefaultLayout from "@/components/DefaultLayout.vue";
 import GuestLayout from "@/components/GuestLayout.vue";
-import NotFound from "@/views/errors/NotFound.vue";
+
+import ForgotPassword from "@/views/auth/ForgotPassword.vue";
 import TasksView from "@/views/TasksView.vue";
 import SubtasksView from "@/views/SubtasksView.vue";
-import ForgotPassword from "@/views/auth/ForgotPassword.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
 import LoginView from "@/views/auth/LoginView.vue";
 import ImportantView from "@/views/ImportantView.vue";
 import PlannedView from "@/views/PlannedView.vue";
 import AssignedView from "@/views/AssignedView.vue";
 import FlaggedView from "@/views/FlaggedView.vue";
-import { useUserStore } from "@/stores/user";
+
+import NotFound from "@/views/errors/NotFound.vue";
+import ForbiddenView from "@/views/errors/ForbiddenView.vue";
+import ServerError from "@/views/errors/ServerError.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -43,6 +47,16 @@ const router = createRouter({
       path: "/forgotpassword",
       name: "ForgotPassword",
       component: ForgotPassword,
+    },
+    {
+      path: "/forbidden",
+      name: "Forbidden",
+      component: ForbiddenView,
+    },
+    {
+      path: "/servererror",
+      name: "ServerError",
+      component: ServerError,
     },
     {
       path: "/:pathMatch(.*)*",
