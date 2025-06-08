@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useClickOutside } from "@/composables/useClickOutside";
@@ -8,9 +8,13 @@ import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "@/components/DropdownItem.vue";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 const taskStore = useTaskStore();
 const subtaskStore = useSubtaskStore();
+
+dayjs.extend(relativeTime);
 
 const props = defineProps({
   tasksItem: {
@@ -22,18 +26,6 @@ const props = defineProps({
     default: false,
   },
 });
-
-const formattedDate = new Date(props.tasksItem.updated_at).toLocaleString(
-  "en-GB",
-  {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  }
-);
 
 /* Show/hide update form */
 const showForm = ref(false);
@@ -64,6 +56,9 @@ const handleUpdate = async (taskItem) => {
   /* Update the original name for undo */
   props.tasksItem.original_name = taskItem.name;
 
+  // Update updated_at field in tasksItem object
+  props.tasksItem.updated_at = dayjs().toISOString();
+
   showForm.value = false;
 };
 
@@ -83,6 +78,20 @@ const handleDelete = async (id) => {
     await taskStore.deleteTask(id);
   }
 };
+
+/**
+ * If updated date is less than 7 days ago,
+ * show relative time, otherwise show date
+ */
+const formattedDate = computed(() => {
+  const date = props.tasksItem.updated_at;
+
+  if (dayjs(date).isBefore(dayjs().subtract(7, "days"))) {
+    return dayjs(date).format("DD MMM YYYY");
+  } else {
+    return dayjs(date).fromNow();
+  }
+});
 </script>
 
 <template>
