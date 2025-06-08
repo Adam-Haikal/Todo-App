@@ -39,7 +39,7 @@ const headerRef = ref(null);
 useClickOutside(
   headerRef,
   () => {
-    showForm.value = false;
+    handleCancel();
   },
   showForm
 );
@@ -54,8 +54,12 @@ const handleSubmit = async (formData) => {
   } else {
     await taskStore.createTask(formData);
   }
-  taskData.value = {};
+  handleCancel();
+};
+
+const handleCancel = () => {
   showForm.value = false;
+  taskData.value = {};
 };
 
 // const emit = defineEmits(["update:modelValue"]);
@@ -81,7 +85,11 @@ const handleSubmit = async (formData) => {
         </RouterLink>
 
         <!-- Show fom button -->
-        <button v-if="hasForm" type="button" @click="showForm = !showForm">
+        <button
+          v-if="hasForm"
+          type="button"
+          @click="showForm = !showForm"
+          :disabled="showForm">
           <PlusIcon
             class="h-8 p-1 w-8 bg-teal-400 text-white rounded-lg inline-flex stroke-2 cursor-pointer"
             aria-hidden="true" />
@@ -120,7 +128,7 @@ const handleSubmit = async (formData) => {
         <!-- Close form button -->
         <Button
           type="button"
-          @click="showForm = false"
+          @click="handleCancel()"
           class="text-gray-500 cursor-pointer hover:text-red-400 text-sm">
           Cancel
         </Button>

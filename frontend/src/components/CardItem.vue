@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useClickOutside } from "@/composables/useClickOutside";
@@ -40,20 +40,20 @@ const showForm = ref(false);
 const cardRef = ref(null);
 const togglingSubtaskId = ref(null);
 
-/* Close form on click outside the card*/
-useClickOutside(
-  cardRef,
-  () => {
-    showForm.value = false;
-  },
-  showForm
-);
-
 const handleToggle = async (subtaskId) => {
   togglingSubtaskId.value = subtaskId;
   await subtaskStore.toggleSubtaskCompletion(subtaskId);
   togglingSubtaskId.value = null;
 };
+
+/* Close form on click outside the card*/
+useClickOutside(
+  cardRef,
+  () => {
+    handleCancel(props.tasksItem.id);
+  },
+  showForm
+);
 
 const handleUpdate = async (taskItem) => {
   if (props.isSubtask) {
@@ -61,6 +61,9 @@ const handleUpdate = async (taskItem) => {
   } else {
     await taskStore.updateTask(taskItem);
   }
+  /* Update the original name for undo */
+  props.tasksItem.original_name = taskItem.name;
+
   showForm.value = false;
 };
 
