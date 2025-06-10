@@ -18,30 +18,30 @@ axiosClient.interceptors.response.use(
     const userStore = useUserStore();
     switch (error.response && error.response.status) {
       case 401:
-        // Handle authentication errors
+        /* Handle authentication errors */
         userStore.clearUser();
         // router.push({ name: "Login" }); /* Redirect already handled by route guard */
         break;
       case 403:
-        // Handle forbidden errors
+        /* Handle forbidden errors */
         router.push({ name: "Forbidden" });
         break;
       case 404:
-        // Handle not found errors
+        /* Handle not found errors */
         router.push({ name: "NotFound" });
         break;
       case 419:
-        // Handle CSRF token errors
+        /* Handle CSRF token errors */
         userStore.clearUser();
         router.push({ name: "Login" });
         break;
       case 500:
-        // Handle internal server errors
+        /* Handle internal server errors */
         console.error("Internal Server Error:", error.response.data);
         router.push({ name: "ServerError" });
         break;
       default:
-        // Handle other errors
+        /* Handle other errors */
         error.message = "An unexpected error occurred.";
     }
     return Promise.reject(error);

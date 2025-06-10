@@ -85,15 +85,10 @@ router.beforeEach(async (to, from, next) => {
 
   const isAuthenticated = userStore.user;
 
-  if (requiresAuth && !isAuthenticated) {
-    return next({ name: "Login" });
-  }
-
-  if (requiresGuest && isAuthenticated) {
-    return next({ name: "Tasks" });
-  }
-
-  return next();
+  if (requiresAuth && !isAuthenticated) next({ name: "Login" });
+  else if ((requiresGuest && isAuthenticated) || to.path === "/")
+    next({ name: "Tasks" });
+  else next();
 });
 
 export default router;
