@@ -1,10 +1,11 @@
 <script setup>
-import { nextTick, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useClickOutside } from "@/composables/useClickOutside";
 import { PlusIcon, ChevronLeftIcon } from "@heroicons/vue/24/outline";
+import { toast } from "vue3-toastify";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 
@@ -54,6 +55,17 @@ const handleSubmit = async (formData) => {
   } else {
     await taskStore.createTask(formData);
   }
+
+  /* Show create success message */
+  toast.success(formData.name + " has been created successfully!", {
+    position: "bottom-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    progress: undefined,
+    theme: "colored",
+  });
   handleCancel();
 };
 

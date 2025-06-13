@@ -1,9 +1,10 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, h } from "vue";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useClickOutside } from "@/composables/useClickOutside";
-import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
+import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { toast } from "vue3-toastify";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "@/components/DropdownItem.vue";
 import Input from "@/components/Input.vue";
@@ -56,10 +57,18 @@ const handleUpdate = async (taskItem) => {
   /* Update the original name for undo */
   props.tasksItem.original_name = taskItem.name;
 
-  // Update updated_at field in tasksItem object
+  /* Update updated_at field in tasksItem object */
   props.tasksItem.updated_at = dayjs().toISOString();
 
   showForm.value = false;
+
+  /* Show update success message */
+  toast.info(props.tasksItem.name + " has been updated!", {
+    position: "bottom-right",
+    autoClose: 2000,
+    pauseOnHover: false,
+    theme: "colored",
+  });
 };
 
 const handleCancel = (id) => {
@@ -77,6 +86,15 @@ const handleDelete = async (id) => {
   } else {
     await taskStore.deleteTask(id);
   }
+
+  /* Show delete success message */
+  toast.error(props.tasksItem.name + " has been deleted!", {
+    icon: h(TrashIcon),
+    position: "bottom-right",
+    autoClose: 2000,
+    pauseOnHover: false,
+    theme: "colored",
+  });
 };
 
 /**
