@@ -22,9 +22,6 @@ onMounted(async () => {
   subtaskStore.subtasks = [];
   try {
     /* Fetch parent task details */
-    const response = await axiosClient.get(`/api/tasks/${taskId}`);
-    task.value = response.data;
-
     await subtaskStore.getSubtasks(taskId);
   } catch (error) {
     console.error("Error fetching subtasks:", error);

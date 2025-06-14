@@ -24,7 +24,7 @@ const navigation = [
 ];
 const userNavigation = [
   { name: "Your Profile", to: { name: "Tasks" } },
-  { name: "Settings", to: { name: "Tasks" } },
+  { name: "Tags", to: { name: "Tags" } },
   { name: "Logout", onClick: userStore.logout },
 ];
 </script>
