@@ -22,5 +22,9 @@ class TagsSeeder extends Seeder
 
         /* Create 10 tags with the same user */
         Tags::factory()->forUser($user)->count(10)->create();
+
+        /* Create 10 tags with the same task */
+        $task = Tags::factory()->create();
+        Tags::factory()->forTask($task)->count(10)->create();
     }
 }

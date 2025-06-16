@@ -1,8 +1,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import axiosClient from "@/axios";
 import { useSubtaskStore } from "@/stores/subtask";
+import { useTaskStore } from "@/stores/task";
 import Header from "@/components/Header.vue";
 import CardItem from "@/components/CardItem.vue";
 import ItemCount from "@/components/ItemCount.vue";
@@ -10,9 +10,11 @@ import { HalfCircleSpinner } from "epic-spinners";
 
 const route = useRoute();
 const subtaskStore = useSubtaskStore();
+const taskStore = useTaskStore();
 
 const taskId = route.params.id;
 const task = ref({});
+
 const isLoading = ref(false);
 const showOngoing = ref(true);
 const showCompleted = ref(false);
@@ -23,6 +25,9 @@ onMounted(async () => {
   try {
     /* Fetch parent task details */
     await subtaskStore.getSubtasks(taskId);
+
+    /* Get task name from parent task */
+    task.value = await taskStore.getTask(taskId);
   } catch (error) {
     console.error("Error fetching subtasks:", error);
   }
@@ -33,7 +38,13 @@ onMounted(async () => {
 <template>
   <!-- Listen to isToggling in CardItem and change cursor to wait-->
   <div>
-    <Header :title="task.name" :taskId="taskId" hasForm isSubtask />
+    <!-- :title -> get the task name of the subtask -->
+    <Header
+      :title="task.name"
+      :taskId="taskId"
+      hasForm
+      dataType="subtask"
+      subtitle="Enter subtask name" />
 
     <main>
       <div class="relative mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">

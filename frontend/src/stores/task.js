@@ -78,5 +78,15 @@ export const useTaskStore = defineStore("task", {
         console.error("Error deleting task:", error);
       }
     },
+
+    /* Get a specific task */
+    async getTask(taskId) {
+      try {
+        const response = await axiosClient.get(`/api/tasks/${taskId}`);
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching task:", error);
+      }
+    },
   },
 });

@@ -46,7 +46,6 @@ const inputMappings = {
     type: "text",
     name: "taskName",
     id: "taskName",
-    placeholder: "Enter Task Name",
   },
 };
 

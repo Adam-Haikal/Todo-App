@@ -1,8 +1,9 @@
 <script setup>
-import { nextTick, onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useTaskStore } from "@/stores/task";
 import { useSubtaskStore } from "@/stores/subtask";
+import { useTagStore } from "@/stores/tag";
 import { useClickOutside } from "@/composables/useClickOutside";
 import { PlusIcon, ChevronLeftIcon } from "@heroicons/vue/24/outline";
 import { toast } from "vue3-toastify";
@@ -11,19 +12,24 @@ import Button from "@/components/Button.vue";
 
 const taskStore = useTaskStore();
 const subtaskStore = useSubtaskStore();
+const tagStore = useTagStore();
 
 const props = defineProps({
   title: {
     type: String,
     // default: "Tasks",
   },
+  subtitle: {
+    type: String,
+    required: false,
+  },
   hasForm: {
     type: Boolean,
     default: false,
   },
-  isSubtask: {
-    type: Boolean,
-    default: false,
+  dataType: {
+    type: String,
+    default: "task",
   },
   taskId: {
     type: String,
@@ -31,7 +37,9 @@ const props = defineProps({
   },
 });
 
-const taskData = ref({});
+const taskData = ref({
+  color: "#ffffff",
+});
 /* Show/hide create form */
 const showForm = ref(false);
 const headerRef = ref(null);
@@ -46,14 +54,23 @@ useClickOutside(
 );
 
 const handleSubmit = async (formData) => {
-  if (props.isSubtask) {
+  if (props.dataType === "subtask") {
     await subtaskStore.createSubtask({
       name: formData.name,
       task_id: props.taskId,
       completed: formData.completed ?? false,
     });
-  } else {
+  } else if (props.dataType === "task") {
     await taskStore.createTask(formData);
+  } else {
+    await tagStore.createTag({
+      name: formData.name,
+      color: formData.color,
+      task_id: props.taskId,
+    });
+
+    /* Reset taskData.color to a default value */
+    taskData.value.color = "#ffffff";
   }
 
   /* Show create success message */
@@ -71,9 +88,24 @@ const handleSubmit = async (formData) => {
 
 const handleCancel = () => {
   showForm.value = false;
-  taskData.value = {};
+  taskData.value = {
+    color: "#ffffff",
+  };
 };
 
+const isValidColor = (color) => {
+  const regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+  return regex.test(color);
+};
+
+watch(
+  () => taskData.color,
+  (newColor) => {
+    if (!isValidColor(newColor)) {
+      console.error("Invalid color format");
+    }
+  }
+);
 // const emit = defineEmits(["update:modelValue"]);
 // const emit = defineEmits(["newTaskCreated"]);
 </script>
@@ -85,11 +117,12 @@ const handleCancel = () => {
         class="mx-auto px-4 py-3 sm:px-6 lg:px-8 justify-between flex items-center">
         <!-- Back button -->
         <RouterLink
-          :to="isSubtask ? { name: 'Tasks' } : {}"
+          :to="dataType !== 'task' ? { name: 'Tasks' } : {}"
           class="inline-flex gap-2 group items-center">
           <ChevronLeftIcon
-            v-if="isSubtask"
+            v-if="dataType !== 'task'"
             class="bg-indigo-600 group-hover:bg-indigo-500 text-white size-8 rounded-md" />
+
           <h1
             class="text-3xl font-bold tracking-tight text-gray-900 group-hover:text-gray-700">
             {{ title }}
@@ -120,15 +153,27 @@ const handleCancel = () => {
           inputType="text"
           v-model="taskData.name"
           class="border-gray-300 rounded-lg w-full"
+          :placeholder="subtitle"
           required />
 
         <!-- input for completed checkbox -->
-        <span v-if="isSubtask" class="size-10">
+        <span v-if="dataType === 'subtask'" class="size-10">
           <Input
             inputType="checkbox"
             v-model="taskData.completed"
             class="size-10" />
         </span>
+
+        <!-- input for tag color -->
+        <div v-if="dataType === 'tag'">
+          <input
+            type="color"
+            id="color"
+            name="color"
+            v-model="taskData.color"
+            title="Choose your tag color"
+            class="size-10" />
+        </div>
 
         <!-- Submit form button -->
         <Button

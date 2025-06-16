@@ -23,6 +23,7 @@ class TagsFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'color' => fake()->hexColor(),
+            'task_id' => null,
             'user_id' => null,
             // 'user_id' => User::factory()->create()->id,
         ];
@@ -31,5 +32,10 @@ class TagsFactory extends Factory
     public function forUser(User $user)
     {
         return $this->state(['user_id' => $user->id]);
+    }
+
+    public function forTask(Tags $task)
+    {
+        return $this->state(['task_id' => $task->id]);
     }
 }

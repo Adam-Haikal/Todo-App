@@ -24,7 +24,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <Header title="Tasks" hasForm />
+    <Header title="Tasks" hasForm subtitle="Enter task name" />
 
     <!-- Display tasks -->
     <main>
