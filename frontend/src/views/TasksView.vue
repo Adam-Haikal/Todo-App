@@ -1,14 +1,23 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
+import { toastCreated } from "@/composables/toastCreated";
 import CardItem from "@/components/CardItem.vue";
 import Header from "@/components/Header.vue";
 import { HalfCircleSpinner } from "epic-spinners";
 
-// Import the task store
 const taskStore = useTaskStore();
 
 const isLoading = ref(false);
+const headerRef = ref(null);
+
+const handleSubmit = async (formData) => {
+  await taskStore.createTask(formData);
+  toastCreated(formData);
+
+  /* Call handleCancel directly */
+  headerRef.value.handleCancel();
+};
 
 onMounted(async () => {
   isLoading.value = true;
@@ -24,7 +33,11 @@ onMounted(async () => {
 
 <template>
   <div>
-    <Header title="Tasks" hasForm subtitle="Enter task name" />
+    <Header
+      title="Tasks"
+      subtitle="Enter task name"
+      :handleSubmit="handleSubmit"
+      ref="headerRef" />
 
     <!-- Display tasks -->
     <main>

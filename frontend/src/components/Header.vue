@@ -1,18 +1,10 @@
 <script setup>
 import { ref, watch } from "vue";
 import { RouterLink } from "vue-router";
-import { useTaskStore } from "@/stores/task";
-import { useSubtaskStore } from "@/stores/subtask";
-import { useTagStore } from "@/stores/tag";
 import { useClickOutside } from "@/composables/useClickOutside";
 import { PlusIcon, ChevronLeftIcon } from "@heroicons/vue/24/outline";
-import { toast } from "vue3-toastify";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
-
-const taskStore = useTaskStore();
-const subtaskStore = useSubtaskStore();
-const tagStore = useTagStore();
 
 const props = defineProps({
   title: {
@@ -23,68 +15,32 @@ const props = defineProps({
     type: String,
     required: false,
   },
-  hasForm: {
-    type: Boolean,
-    default: false,
-  },
   dataType: {
     type: String,
     default: "task",
   },
-  taskId: {
-    type: String,
-    required: false,
+  handleSubmit: {
+    type: Function,
+    required: true,
   },
 });
 
-const taskData = ref({
-  color: "#ffffff",
-});
 /* Show/hide create form */
 const showForm = ref(false);
 const headerRef = ref(null);
+const taskData = ref({
+  color: "#ffffff",
+});
 
 /* Close form on click outside the card*/
 useClickOutside(
   headerRef,
   () => {
+    /* Call handleCancel after form submission */
     handleCancel();
   },
   showForm
 );
-
-const handleSubmit = async (formData) => {
-  if (props.dataType === "subtask") {
-    await subtaskStore.createSubtask({
-      name: formData.name,
-      task_id: props.taskId,
-      completed: formData.completed ?? false,
-    });
-  } else if (props.dataType === "task") {
-    await taskStore.createTask(formData);
-  } else {
-    await tagStore.createTag({
-      name: formData.name,
-      color: formData.color,
-      task_id: props.taskId,
-    });
-
-    /* Reset taskData.color to a default value */
-    taskData.value.color = "#ffffff";
-  }
-
-  /* Show create success message */
-  toast.success(formData.name + " has been created successfully!", {
-    position: "bottom-right",
-    autoClose: 2000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    progress: undefined,
-    theme: "colored",
-  });
-  handleCancel();
-};
 
 const handleCancel = () => {
   showForm.value = false;
@@ -92,6 +48,10 @@ const handleCancel = () => {
     color: "#ffffff",
   };
 };
+
+defineExpose({
+  handleCancel,
+});
 
 const isValidColor = (color) => {
   const regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
@@ -106,8 +66,6 @@ watch(
     }
   }
 );
-// const emit = defineEmits(["update:modelValue"]);
-// const emit = defineEmits(["newTaskCreated"]);
 </script>
 
 <template>
@@ -131,7 +89,6 @@ watch(
 
         <!-- Show fom button -->
         <button
-          v-if="hasForm"
           type="button"
           @click="showForm = !showForm"
           :disabled="showForm">
@@ -142,10 +99,8 @@ watch(
       </div>
     </header>
 
-    <div
-      v-if="showForm && hasForm"
-      ref="headerRef"
-      class="p-4 rounded-lg shadow">
+    <!-- Create form -->
+    <div v-if="showForm" ref="headerRef" class="p-4 rounded-lg shadow">
       <form
         @submit.prevent="handleSubmit(taskData)"
         class="flex items-center space-x-2 max-w-5xl mx-auto">

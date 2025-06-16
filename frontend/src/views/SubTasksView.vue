@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useTaskStore } from "@/stores/task";
+import { toastCreated } from "@/composables/toastCreated";
 import Header from "@/components/Header.vue";
 import CardItem from "@/components/CardItem.vue";
 import ItemCount from "@/components/ItemCount.vue";
@@ -18,6 +19,19 @@ const task = ref({});
 const isLoading = ref(false);
 const showOngoing = ref(true);
 const showCompleted = ref(false);
+const headerRef = ref(null);
+
+const handleSubmit = async (formData) => {
+  await subtaskStore.createSubtask({
+    name: formData.name,
+    task_id: taskId,
+    completed: formData.completed ?? false,
+  });
+  toastCreated(formData);
+
+  /* Call handleCancel directly */
+  headerRef.value.handleCancel();
+};
 
 onMounted(async () => {
   isLoading.value = true;
@@ -38,13 +52,12 @@ onMounted(async () => {
 <template>
   <!-- Listen to isToggling in CardItem and change cursor to wait-->
   <div>
-    <!-- :title -> get the task name of the subtask -->
     <Header
       :title="task.name"
-      :taskId="taskId"
-      hasForm
       dataType="subtask"
-      subtitle="Enter subtask name" />
+      subtitle="Enter subtask name"
+      :handleSubmit="handleSubmit"
+      ref="headerRef" />
 
     <main>
       <div class="relative mx-auto sm:max-w-9/10 px-4 py-6 sm:px-6 lg:px-8">
@@ -63,8 +76,7 @@ onMounted(async () => {
                 v-for="subtask in subtaskStore.ongoingTasks"
                 :key="subtask.id"
                 :tasksItem="subtask"
-                isSubtask
-                class="" />
+                isSubtask />
             </div>
           </section>
 
@@ -82,8 +94,7 @@ onMounted(async () => {
                 v-for="subtask in subtaskStore.completedTasks"
                 :key="subtask.id"
                 :tasksItem="subtask"
-                isSubtask
-                class="" />
+                isSubtask />
             </div>
           </section>
         </div>
