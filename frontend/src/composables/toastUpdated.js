@@ -1,8 +1,8 @@
 import { toast } from "vue3-toastify";
 
-export function toastCreated(itemName) {
-  /* Show create success message */
-  toast.success(itemName + " has been created successfully!", {
+export function toastUpdated(itemName) {
+  /* Show update success message */
+  toast.info(itemName + " has been updated!", {
     position: "bottom-right",
     autoClose: 2000,
     hideProgressBar: false,

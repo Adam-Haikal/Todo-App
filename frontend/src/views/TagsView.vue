@@ -2,7 +2,6 @@
 import { onMounted, ref } from "vue";
 import { useTagStore } from "@/stores/tag";
 import { useUserStore } from "@/stores/user";
-import { toastCreated } from "@/composables/toastCreated";
 import Header from "@/components/Header.vue";
 import contrast from "color-contrast";
 import { HalfCircleSpinner } from "epic-spinners";
@@ -77,7 +76,7 @@ onMounted(async () => {
           <!-- Check if the owner of the tag is the current user -->
           <span
             v-if="tag.user_id === userStore.user.id"
-            @click="tagStore.deleteTag(tag.id, tag.name)"
+            @click="tagStore.deleteTag(tag)"
             class="cursor-pointer ml-1">
             X
           </span>

@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import axiosClient from "@/axios";
 import { useUserStore } from "@/stores/user";
 import { toastCreated } from "@/composables/toastCreated";
+import { toastUpdated } from "@/composables/toastUpdated";
+import { toastDeleted } from "@/composables/toastDeleted";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -47,7 +49,7 @@ export const useTaskStore = defineStore("task", {
           original_name: response.data.task.name,
         });
 
-        toastCreated(task);
+        toastCreated(task.name);
       } catch (error) {
         console.error("Error creating task:", error);
       }
@@ -57,26 +59,22 @@ export const useTaskStore = defineStore("task", {
     async updateTask(task) {
       try {
         await axiosClient.put(`/api/tasks/${task.id}`, task);
+
+        toastUpdated(task.name);
       } catch (error) {
         console.error("Error updating task:", error);
       }
     },
 
-    /* Reset the task name */
-    resetTaskName(taskId) {
-      const task = this.tasks.find((task) => task.id === taskId);
-      if (task) {
-        task.name = task.original_name;
-      }
-    },
-
     /* Delete a task */
-    async deleteTask(taskId) {
+    async deleteTask(task) {
       try {
-        await axiosClient.delete(`/api/tasks/${taskId}`);
+        await axiosClient.delete(`/api/tasks/${task.id}`);
 
         /* Remove the deleted task from the local state */
-        this.tasks = this.tasks.filter((task) => task.id !== taskId);
+        this.tasks = this.tasks.filter((taskData) => taskData.id !== task.id);
+
+        toastDeleted(task.name);
       } catch (error) {
         console.error("Error deleting task:", error);
       }
@@ -89,6 +87,14 @@ export const useTaskStore = defineStore("task", {
         return response.data;
       } catch (error) {
         console.error("Error fetching task:", error);
+      }
+    },
+
+    /* Reset the task name */
+    resetTaskName(taskId) {
+      const task = this.tasks.find((task) => task.id === taskId);
+      if (task) {
+        task.name = task.original_name;
       }
     },
   },

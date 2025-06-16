@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
 import { toastCreated } from "@/composables/toastCreated";
+import { toastUpdated } from "@/composables/toastUpdated";
+import { toastDeleted } from "../composables/toastDeleted";
 
 export const useSubtaskStore = defineStore("subtask", {
   state: () => ({
@@ -45,7 +47,7 @@ export const useSubtaskStore = defineStore("subtask", {
           original_name: response.data.subtask.name,
         });
 
-        toastCreated(subtask);
+        toastCreated(subtask.name);
       } catch (error) {
         console.error("Error creating subtask:", error);
       }
@@ -55,8 +57,26 @@ export const useSubtaskStore = defineStore("subtask", {
     async updateSubtask(subtask) {
       try {
         await axiosClient.put(`/api/subtasks/${subtask.id}`, subtask);
+
+        toastUpdated(subtask.name);
       } catch (error) {
         console.error("Error updating subtask:", error);
+      }
+    },
+
+    /* Delete subtask */
+    async deleteSubtask(subtask) {
+      try {
+        await axiosClient.delete(`/api/subtasks/${subtask.id}`);
+
+        /* Remove the deleted subtask from the local state */
+        this.subtasks = this.subtasks.filter(
+          (subtaskData) => subtaskData.id !== subtask.id
+        );
+
+        toastDeleted(subtask.name);
+      } catch (error) {
+        console.error("Error deleting task:", error);
       }
     },
 
@@ -65,20 +85,6 @@ export const useSubtaskStore = defineStore("subtask", {
       const subtask = this.subtasks.find((subtask) => subtask.id === subtaskId);
       if (subtask) {
         subtask.name = subtask.original_name;
-      }
-    },
-
-    /* Delete subtask */
-    async deleteSubtask(subtaskId) {
-      try {
-        await axiosClient.delete(`/api/subtasks/${subtaskId}`);
-
-        /* Remove the deleted subtask from the local state */
-        this.subtasks = this.subtasks.filter(
-          (subtask) => subtask.id !== subtaskId
-        );
-      } catch (error) {
-        console.error("Error deleting task:", error);
       }
     },
 

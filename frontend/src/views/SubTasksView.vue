@@ -7,6 +7,7 @@ import Header from "@/components/Header.vue";
 import CardItem from "@/components/CardItem.vue";
 import ItemCount from "@/components/ItemCount.vue";
 import { HalfCircleSpinner } from "epic-spinners";
+import dayjs from "dayjs";
 
 const route = useRoute();
 const subtaskStore = useSubtaskStore();
@@ -19,6 +20,7 @@ const isLoading = ref(false);
 const showOngoing = ref(true);
 const showCompleted = ref(false);
 const headerRef = ref(null);
+const cardItemRef = ref(null);
 
 const handleSubmit = async (formData) => {
   await subtaskStore.createSubtask({
@@ -26,9 +28,21 @@ const handleSubmit = async (formData) => {
     task_id: taskId,
     completed: formData.completed ?? false,
   });
-
   /* Call handleCancel directly */
   headerRef.value.handleCancel();
+};
+
+const handleUpdate = async (formData, index) => {
+  formData.original_name = formData.name;
+  formData.updated_at = dayjs().toISOString();
+
+  await subtaskStore.updateSubtask(formData);
+  /* Call handleCancel directly */
+  cardItemRef.value[index].handleCancel(formData.id);
+};
+
+const handleDelete = async (taskItem) => {
+  await subtaskStore.deleteSubtask(taskItem);
 };
 
 onMounted(async () => {
@@ -70,10 +84,13 @@ onMounted(async () => {
             <div id="ongoingContainer" v-if="showOngoing">
               <CardItem
                 id="ongoingSubtasks"
-                v-for="subtask in subtaskStore.ongoingTasks"
+                v-for="(subtask, index) in subtaskStore.ongoingTasks"
                 :key="subtask.id"
                 :tasksItem="subtask"
-                isSubtask />
+                :handleUpdate="(formData) => handleUpdate(formData, index)"
+                :handleDelete="handleDelete"
+                isSubtask
+                ref="cardItemRef" />
             </div>
           </section>
 

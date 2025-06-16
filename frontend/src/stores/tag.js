@@ -40,7 +40,7 @@ export const useTagStore = defineStore("tag", {
           original_name: response.data.tag.name,
         });
 
-        toastCreated(tag);
+        toastCreated(tag.name);
 
         /* Reset tag.color to a default value */
         tag.color = "#ffffff";
@@ -50,14 +50,14 @@ export const useTagStore = defineStore("tag", {
     },
 
     /* Delete a tag */
-    async deleteTag(tagId, tagName) {
+    async deleteTag(tag) {
       try {
-        await axiosClient.delete(`/api/tags/${tagId}`);
+        await axiosClient.delete(`/api/tags/${tag.id}`);
 
         /* Remove the deleted tag from the local state */
-        this.tags = this.tags.filter((tag) => tag.id !== tagId);
+        this.tags = this.tags.filter((tagData) => tagData.id !== tag.id);
 
-        toastDeleted(tagName);
+        toastDeleted(tag.name);
       } catch (error) {
         console.error("Error deleting tag:", error);
       }
