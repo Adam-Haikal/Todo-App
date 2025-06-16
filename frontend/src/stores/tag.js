@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
-
 import { useUserStore } from "@/stores/user";
+import { toastDeleted } from "@/composables/toastDeleted";
+import { toastCreated } from "@/composables/toastCreated";
 
 export const useTagStore = defineStore("tag", {
   state: () => ({
@@ -38,15 +39,25 @@ export const useTagStore = defineStore("tag", {
           ...response.data.tag,
           original_name: response.data.tag.name,
         });
+
+        toastCreated(tag);
+
+        /* Reset tag.color to a default value */
+        tag.color = "#ffffff";
       } catch (error) {
         console.error("Error creating tag:", error);
       }
     },
 
     /* Delete a tag */
-    async deleteTag(tagId) {
+    async deleteTag(tagId, tagName) {
       try {
         await axiosClient.delete(`/api/tags/${tagId}`);
+
+        /* Remove the deleted tag from the local state */
+        this.tags = this.tags.filter((tag) => tag.id !== tagId);
+
+        toastDeleted(tagName);
       } catch (error) {
         console.error("Error deleting tag:", error);
       }

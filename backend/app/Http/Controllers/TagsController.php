@@ -9,8 +9,10 @@ class TagsController extends Controller
 {
     public function index()
     {
-        $tags = Tags::with('user')->latest()->get();
-        // $tags = Tags::all();
+        $tags = Tags::where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
         return response()->json($tags);
     }
 
@@ -34,5 +36,16 @@ class TagsController extends Controller
         ]);
 
         return response()->json(['tag' => $tag, 'message' => 'Tag created successfully'], 201);
+    }
+
+    public function destroy(Tags $tag)
+    {
+        /* Authorization: Only allow if user is authenticated */
+        if (!auth()->check()) {
+            return response()->json(['message' => 'You do not have permission to create a tag'], 401);
+        }
+
+        $tag->delete();
+        return response()->json(['message' => 'Tag deleted successfully'], 200);
     }
 }

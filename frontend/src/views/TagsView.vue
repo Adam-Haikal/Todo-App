@@ -5,11 +5,13 @@ import { useUserStore } from "@/stores/user";
 import { toastCreated } from "@/composables/toastCreated";
 import Header from "@/components/Header.vue";
 import contrast from "color-contrast";
+import { HalfCircleSpinner } from "epic-spinners";
 
 const tagStore = useTagStore();
 const userStore = useUserStore();
 
 const headerRef = ref(null);
+const isLoading = ref(false);
 const props = defineProps({
   taskId: {
     type: String,
@@ -34,20 +36,19 @@ const handleSubmit = async (formData) => {
     color: formData.color,
     task_id: props.taskId,
   });
-  toastCreated(formData);
 
   /* Call handleCancel directly */
   headerRef.value.handleCancel();
-  /* Reset taskData.color to a default value */
-  formData.color = "#ffffff";
 };
 
 onMounted(async () => {
+  isLoading.value = true;
   try {
     await tagStore.getTags();
   } catch (error) {
     console.error("Error fetching tags:", error);
   }
+  isLoading.value = false;
 });
 </script>
 
@@ -72,19 +73,26 @@ onMounted(async () => {
           }"
           class="text-sm font-medium px-4 py-2 rounded-full">
           {{ tag.name }}
-          <span>
-            <!-- Check if the owner of the tag is the current user -->
-            <span
-              v-if="tag.user_id === userStore.user.id"
-              @click="tagStore.deleteTag(tag.id)"
-              class="cursor-pointer ml-1">
-              X
-            </span>
+
+          <!-- Check if the owner of the tag is the current user -->
+          <span
+            v-if="tag.user_id === userStore.user.id"
+            @click="tagStore.deleteTag(tag.id, tag.name)"
+            class="cursor-pointer ml-1">
+            X
           </span>
         </span>
 
-        <!-- no tags -->
-        <p v-if="!tagStore.hasTags">No tags yet</p>
+        <!-- Display no subtasks message -->
+        <div
+          class="absolute top-[250px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10">
+          <HalfCircleSpinner
+            v-if="isLoading"
+            :animation-duration="1000"
+            :size="60"
+            :color="'#1e2939'" />
+          <p v-if="!tagStore.hasTags && !isLoading">No tags available.</p>
+        </div>
       </div>
     </main>
   </div>

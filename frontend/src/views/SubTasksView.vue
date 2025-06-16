@@ -3,7 +3,6 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useTaskStore } from "@/stores/task";
-import { toastCreated } from "@/composables/toastCreated";
 import Header from "@/components/Header.vue";
 import CardItem from "@/components/CardItem.vue";
 import ItemCount from "@/components/ItemCount.vue";
@@ -27,7 +26,6 @@ const handleSubmit = async (formData) => {
     task_id: taskId,
     completed: formData.completed ?? false,
   });
-  toastCreated(formData);
 
   /* Call handleCancel directly */
   headerRef.value.handleCancel();
@@ -37,11 +35,10 @@ onMounted(async () => {
   isLoading.value = true;
   subtaskStore.subtasks = [];
   try {
-    /* Fetch parent task details */
-    await subtaskStore.getSubtasks(taskId);
-
     /* Get task name from parent task */
     task.value = await taskStore.getTask(taskId);
+    /* Fetch parent task details */
+    await subtaskStore.getSubtasks(taskId);
   } catch (error) {
     console.error("Error fetching subtasks:", error);
   }

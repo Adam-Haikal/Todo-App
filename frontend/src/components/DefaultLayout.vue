@@ -23,7 +23,7 @@ const navigation = [
   // { name: "Flagged", to: { name: "Flagged" }, current: false },
 ];
 const userNavigation = [
-  { name: "Your Profile", to: { name: "Tasks" } },
+  // { name: "Your Profile", to: { name: "Tasks" } },
   { name: "Tags", to: { name: "Tags" } },
   { name: "Logout", onClick: userStore.logout },
 ];

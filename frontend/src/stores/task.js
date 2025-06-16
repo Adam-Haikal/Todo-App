@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
 import { useUserStore } from "@/stores/user";
+import { toastCreated } from "@/composables/toastCreated";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
@@ -45,6 +46,8 @@ export const useTaskStore = defineStore("task", {
           ...response.data.task,
           original_name: response.data.task.name,
         });
+
+        toastCreated(task);
       } catch (error) {
         console.error("Error creating task:", error);
       }
