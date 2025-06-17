@@ -22,4 +22,9 @@ class Task extends Model
     {
         return $this->hasMany(SubTask::class);
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

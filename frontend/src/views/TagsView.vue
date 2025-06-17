@@ -2,8 +2,8 @@
 import { onMounted, ref } from "vue";
 import { useTagStore } from "@/stores/tag";
 import { useUserStore } from "@/stores/user";
+import { colorContrast } from "@/composables/colorContrast";
 import Header from "@/components/Header.vue";
-import contrast from "color-contrast";
 import { HalfCircleSpinner } from "epic-spinners";
 
 const tagStore = useTagStore();
@@ -17,17 +17,6 @@ const props = defineProps({
     required: false,
   },
 });
-
-/* Get text color based on background color */
-const getTextColor = (backgroundColor) => {
-  const textColor = "#fff"; // default text color
-  const contrastRatio = contrast(backgroundColor, textColor);
-  /* threshold for readable contrast */
-  if (contrastRatio < 4.5) {
-    return "#000"; /* change text color to black if contrast is too low */
-  }
-  return textColor;
-};
 
 const handleSubmit = async (formData) => {
   await tagStore.createTag({
@@ -68,7 +57,7 @@ onMounted(async () => {
           :key="tag"
           :style="{
             backgroundColor: tag.color,
-            color: getTextColor(tag.color),
+            color: colorContrast(tag.color),
           }"
           class="text-sm font-medium px-4 py-2 rounded-full">
           {{ tag.name }}

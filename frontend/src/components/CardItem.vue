@@ -1,9 +1,11 @@
 <script setup>
 import { computed, ref, h, onMounted } from "vue";
 import { useTaskStore } from "@/stores/task";
+import { useTagStore } from "@/stores/tag";
 import { useSubtaskStore } from "@/stores/subtask";
 import { useClickOutside } from "@/composables/useClickOutside";
-import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { colorContrast } from "@/composables/colorContrast";
+import { EllipsisVerticalIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "@/components/DropdownItem.vue";
 import Input from "@/components/Input.vue";
@@ -12,6 +14,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 const taskStore = useTaskStore();
+const tagStore = useTagStore();
 const subtaskStore = useSubtaskStore();
 
 dayjs.extend(relativeTime);
@@ -37,6 +40,8 @@ const props = defineProps({
 
 /* Show/hide update form */
 const showForm = ref(false);
+const showTagDropdown = ref(false);
+const selectedTagId = ref(null);
 const cardRef = ref(null);
 const togglingSubtaskId = ref(null);
 
@@ -44,6 +49,15 @@ const handleToggle = async (subtaskId) => {
   togglingSubtaskId.value = subtaskId;
   await subtaskStore.toggleSubtaskCompletion(subtaskId);
   togglingSubtaskId.value = null;
+};
+
+const handleAddTag = async () => {
+  if (!selectedTagId.value) return;
+  // Call your backend to attach the tag to the task (many-to-many)
+  await tagStore.attachTagToTask(selectedTagId.value, props.tasksItem.id);
+  showTagDropdown.value = false;
+  selectedTagId.value = null;
+  // Optionally, refresh the task's tags
 };
 
 /* Close form on click outside the card*/
@@ -57,6 +71,8 @@ useClickOutside(
 
 const handleCancel = (id) => {
   showForm.value = false;
+  showTagDropdown.value = false;
+  // selectedTagId.value = null;
   if (props.isSubtask) {
     subtaskStore.resetSubtaskName(id);
   } else {
@@ -81,6 +97,10 @@ const formattedDate = computed(() => {
     return dayjs(date).fromNow();
   }
 });
+
+onMounted(async () => {
+  await tagStore.getTags();
+});
 </script>
 
 <template>
@@ -88,7 +108,7 @@ const formattedDate = computed(() => {
     ref="cardRef"
     :class="[
       !isSubtask ? 'hover:bg-white/30' : '',
-      'bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200  flex items-center',
+      'relative bg-white space-x-1 rounded-lg px-2 border-2 border-gray-200  flex items-center',
     ]">
     <!-- Checkbox for completed status -->
     <span :class="[!showForm ? 'inline-flex' : 'mb-14']">
@@ -110,25 +130,47 @@ const formattedDate = computed(() => {
     <!-- Task content -->
     <section class="w-full ml-2">
       <div>
-        <!-- Display normal text if not in edit mode, otherwise display form -->
-        <template v-if="!showForm">
-          <RouterLink
-            @mousedown.prevent
-            :class="[isSubtask ? 'font-semibold cursor-default' : 'font-bold']"
-            :to="
-              isSubtask
-                ? {}
-                : { name: 'Subtasks', params: { id: tasksItem.id } }
-            ">
-            <p
-              name="taskName"
-              class="py-2 text-md text-gray-300 dark:text-gray-900">
-              {{ tasksItem.name }}
-            </p>
-          </RouterLink>
+        <!-- Form for adding tag -->
+        <template v-if="showTagDropdown">
+          <div class="py-2 mr-4">
+            <form @submit.prevent="handleAddTag" class="">
+              <p
+                name="taskName"
+                class="py-2 text-md font-bold text-gray-300 dark:text-gray-900">
+                {{ tasksItem.name }}
+              </p>
+              <select v-model="selectedTagId" class="border rounded p-1">
+                <option disabled value="">Select a tag</option>
+                <option
+                  v-for="tag in tagStore.tags"
+                  :key="tag.id"
+                  :value="tag.id">
+                  {{ tag.name }}
+                </option>
+              </select>
+
+              <div class="inline-flex mx-2 gap-2">
+                <!-- Submit form button -->
+                <Button
+                  type="submit"
+                  class="bg-teal-500 p-2 rounded-lg text-white cursor-pointer text-sm">
+                  Add
+                </Button>
+
+                <!-- Close form button -->
+                <Button
+                  type="button"
+                  @click="handleCancel()"
+                  class="text-gray-500 cursor-pointer hover:text-red-400 text-sm">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
         </template>
 
-        <template v-else>
+        <!-- Form for updating task -->
+        <template v-else-if="showForm">
           <div class="py-2 mr-4">
             <form @submit.prevent="handleUpdate(tasksItem)" class="">
               <Input
@@ -153,6 +195,46 @@ const formattedDate = computed(() => {
           </div>
         </template>
 
+        <!-- Display normal text if not in edit/add mode, otherwise display form -->
+        <template v-else>
+          <RouterLink
+            @mousedown.prevent
+            :class="[isSubtask ? 'font-semibold cursor-default' : 'font-bold']"
+            :to="
+              isSubtask
+                ? {}
+                : { name: 'Subtasks', params: { id: tasksItem.id } }
+            ">
+            <p
+              name="taskName"
+              :class="[
+                tasksItem.tags.length > 0 ? 'w-2/4 sm:w-3/4 inline-flex' : '',
+                'py-2 text-md text-gray-300 dark:text-gray-900 bg-amber-400',
+              ]">
+              {{ tasksItem.name }}
+            </p>
+          </RouterLink>
+
+          <!-- Display tags -->
+          <div
+            v-if="tasksItem.tags.length > 0"
+            class="absolute right-8 overflow-y-scroll w-2/4 sm:w-1/4 bg-amber-100 inline-flex h-14">
+            <div class="flex-wrap gap-1">
+              <span
+                v-for="tag in tasksItem.tags"
+                :key="tag.id"
+                class="px-2 py-1 rounded-full text-xs inline-flex"
+                :style="{
+                  backgroundColor: tag.color,
+                  color: colorContrast(tag.color),
+                }">
+                {{ tag.name }}
+              </span>
+            </div>
+          </div>
+          <!-- <span class="absolute bg-amber-100 w-1/4 h-full">{{ tags }}</span> -->
+        </template>
+
         <p class="text-xs text-gray-500 dark:text-gray-600 font-normal mb-1">
           Last updated: {{ formattedDate }}
         </p>
@@ -168,6 +250,10 @@ const formattedDate = computed(() => {
 
       <!-- Dropdown menu items -->
       <template #default>
+        <DropdownItem @click="showTagDropdown = !showTagDropdown">
+          Add Tag
+        </DropdownItem>
+
         <DropdownItem @click="showForm = !showForm">Edit</DropdownItem>
 
         <DropdownItem @click="handleDelete(tasksItem)">Delete</DropdownItem>

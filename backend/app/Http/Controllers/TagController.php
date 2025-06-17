@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tags;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
-class TagsController extends Controller
+class TagController extends Controller
 {
     public function index()
     {
-        $tags = Tags::where('user_id', auth()->id())
+        $tags = Tag::where('user_id', auth()->id())
             ->latest()
             ->get();
 
@@ -28,7 +28,7 @@ class TagsController extends Controller
             'color' => 'required|string|max:7',
         ]);
 
-        $tag = Tags::create([
+        $tag = Tag::create([
             'name' => $request->name,
             'color' => $request->color,
             'task_id' => $request->task_id,
@@ -38,7 +38,7 @@ class TagsController extends Controller
         return response()->json(['tag' => $tag, 'message' => 'Tag created successfully'], 201);
     }
 
-    public function destroy(Tags $tag)
+    public function destroy(Tag $tag)
     {
         /* Authorization: Only allow if user is authenticated */
         if (!auth()->check()) {
