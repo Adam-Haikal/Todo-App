@@ -96,4 +96,16 @@ class TaskController extends Controller
         // $task->tags()->attach($request->tag_id);
         return response()->json(['tags' => $task->tags, 'message' => 'Tag attached successfully'], 200);
     }
+
+    public function detachTag(Task $task, Tag $tag)
+    {
+        /* Authorize: Only allow if user owns the task */
+        if ($task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+
+        $task->tags()->detach($tag->id);
+
+        return response()->json(['tags' => $task->tags, 'message' => 'Tag detached successfully'], 200);
+    }
 }

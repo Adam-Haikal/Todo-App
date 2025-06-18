@@ -1,12 +1,14 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useTaskStore } from "@/stores/task";
+import { useTagStore } from "@/stores/tag";
 import CardItem from "@/components/CardItem.vue";
 import Header from "@/components/Header.vue";
 import { HalfCircleSpinner } from "epic-spinners";
 import dayjs from "dayjs";
 
 const taskStore = useTaskStore();
+const tagStore = useTagStore();
 
 const isLoading = ref(false);
 const headerRef = ref(null);
@@ -60,6 +62,7 @@ onMounted(async () => {
           :tasksItem="task"
           :handleUpdate="(formData) => handleUpdate(formData, index)"
           :handleDelete="handleDelete"
+          :handleRemoveTag="tagStore.removeTagFromTask"
           ref="cardItemRef" />
 
         <!-- Display no tasks message -->

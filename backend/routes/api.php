@@ -17,4 +17,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     /* Route for attaching a tag to task */
     Route::post('/tasks/{task}/tags', [TaskController::class, 'attachTag']);
+    Route::delete('/tasks/{task}/tags/{tag}', [TaskController::class, 'detachTag']);
 });

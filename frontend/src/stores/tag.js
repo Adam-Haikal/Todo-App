@@ -51,12 +51,12 @@ export const useTagStore = defineStore("tag", {
     },
 
     /* Delete a tag */
-    async deleteTag(tag) {
+    async deleteTag(tagId, tag = {}) {
       try {
-        await axiosClient.delete(`/api/tags/${tag.id}`);
+        await axiosClient.delete(`/api/tags/${tagId}`);
 
         /* Remove the deleted tag from the local state */
-        this.tags = this.tags.filter((tagData) => tagData.id !== tag.id);
+        this.tags = this.tags.filter((tagData) => tagData.id !== tagId);
 
         toastDeleted(tag.name);
       } catch (error) {
@@ -78,6 +78,22 @@ export const useTagStore = defineStore("tag", {
         }
       } catch (error) {
         console.error("Error attaching tag to task:", error);
+      }
+    },
+
+    async removeTagFromTask(tagId, taskId) {
+      try {
+        const response = await axiosClient.delete(
+          `/api/tasks/${taskId}/tags/${tagId}`
+        );
+
+        const taskStore = useTaskStore();
+        const task = taskStore.tasks.find((task) => task.id === taskId);
+        if (task) {
+          task.tags = response.data.tags;
+        }
+      } catch (error) {
+        console.error("Error removing tag from task:", error);
       }
     },
   },

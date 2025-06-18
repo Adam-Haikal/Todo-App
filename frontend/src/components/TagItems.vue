@@ -1,10 +1,21 @@
 <script setup>
+import { useTagStore } from "@/stores/tag";
 import { colorContrast } from "@/composables/colorContrast";
+
+const tagStore = useTagStore();
 
 const props = defineProps({
   tagItem: {
     type: Object,
     required: true,
+  },
+  pillClass: {
+    type: String,
+    default: "text-xs",
+  },
+  handleRemoveTag: {
+    type: Function,
+    required: false,
   },
 });
 </script>
@@ -17,12 +28,20 @@ const props = defineProps({
       <span
         v-for="tag in tagItem.tags"
         :key="tag.id"
-        class="px-2 py-1 rounded-full text-xs inline-flex m-0.5"
+        :class="[
+          `px-2 py-1 rounded-full inline-flex m-0.5 shadow-md ` + pillClass,
+        ]"
         :style="{
           backgroundColor: tag.color,
           color: colorContrast(tag.color),
         }">
         {{ tag.name }}
+
+        <span
+          @click="handleRemoveTag(tag.id, tagItem.id)"
+          class="cursor-pointer ml-1">
+          X
+        </span>
       </span>
     </div>
   </div>

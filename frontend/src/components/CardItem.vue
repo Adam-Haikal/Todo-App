@@ -37,6 +37,10 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  handleRemoveTag: {
+    type: Function,
+    required: false,
+  },
 });
 
 /* Show/hide update form */
@@ -151,7 +155,10 @@ onMounted(async () => {
         <!------------------------ Form for adding tag ------------------------>
         <template v-if="showTagDropdown">
           <!-- Display tags -->
-          <TagItems :tagItem="tasksItem" class="h-full" />
+          <TagItems
+            :tagItem="tasksItem"
+            class="h-full"
+            :handleRemoveTag="handleRemoveTag" />
 
           <div class="py-2 mr-4">
             <form @submit.prevent="handleAddTag" class="">
@@ -240,7 +247,10 @@ onMounted(async () => {
           </RouterLink>
 
           <!-- Display tags -->
-          <TagItems :tagItem="tasksItem" class="h-14" />
+          <TagItems
+            :tagItem="tasksItem"
+            class="h-14"
+            :handleRemoveTag="handleRemoveTag" />
         </template>
 
         <p class="text-xs text-gray-500 dark:text-gray-600 font-normal mb-1">
