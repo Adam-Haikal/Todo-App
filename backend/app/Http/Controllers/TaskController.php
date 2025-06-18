@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         /* Display tasks for specific user */
@@ -21,9 +19,6 @@ class TaskController extends Controller
         return response()->json($tasks);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         /* Authorization: Only allow if user is authenticated */
@@ -43,9 +38,6 @@ class TaskController extends Controller
         return response()->json(['task' => $task, 'message' => 'Task created successfully'], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Task $task)
     {
         /* Authorization: Only allow if user owns the task */
@@ -64,9 +56,6 @@ class TaskController extends Controller
         return response()->json(['task' => $task, 'message' => 'Task updated successfully'], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Task $task)
     {
         /* Authorization: Only allow if user owns the task */
@@ -86,5 +75,25 @@ class TaskController extends Controller
         }
 
         return response()->json($task);
+    }
+
+    public function attachTag(Request $request, Task $task)
+    {
+        /* Authorize: Only allow if user owns the task */
+        if ($task->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+
+        $request->validate([
+            'tag_id' => 'required|exists:tags,id',
+        ]);
+
+        $tagId = $request->tag_id;
+
+        /* This will only attach if not already attached */
+        $task->tags()->syncWithoutDetaching([$tagId]);
+
+        // $task->tags()->attach($request->tag_id);
+        return response()->json(['tags' => $task->tags, 'message' => 'Tag attached successfully'], 200);
     }
 }

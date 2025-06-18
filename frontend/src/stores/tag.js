@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
 import { useUserStore } from "@/stores/user";
+import { useTaskStore } from "@/stores/task";
 import { toastDeleted } from "@/composables/toastDeleted";
 import { toastCreated } from "@/composables/toastCreated";
 
@@ -60,6 +61,23 @@ export const useTagStore = defineStore("tag", {
         toastDeleted(tag.name);
       } catch (error) {
         console.error("Error deleting tag:", error);
+      }
+    },
+
+    async attachTagToTask(taskId, tagId) {
+      try {
+        const response = await axiosClient.post(`/api/tasks/${taskId}/tags`, {
+          tag_id: tagId,
+        });
+
+        /* Find the task in  local state and update its tags */
+        const taskStore = useTaskStore();
+        const task = taskStore.tasks.find((task) => task.id === taskId);
+        if (task) {
+          task.tags = response.data.tags;
+        }
+      } catch (error) {
+        console.error("Error attaching tag to task:", error);
       }
     },
   },

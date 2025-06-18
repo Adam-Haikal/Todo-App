@@ -14,4 +14,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('tasks', TaskController::class)->only('index', 'store', 'update', 'destroy', 'show');
     Route::apiResource('subtasks', SubtaskController::class)->only('index', 'store', 'update', 'destroy');
     Route::apiResource('tags', TagController::class)->only('index', 'store', 'update', 'destroy');
+
+    /* Route for attaching a tag to task */
+    Route::post('/tasks/{task}/tags', [TaskController::class, 'attachTag']);
 });

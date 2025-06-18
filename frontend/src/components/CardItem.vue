@@ -8,6 +8,7 @@ import { colorContrast } from "@/composables/colorContrast";
 import { EllipsisVerticalIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "@/components/DropdownItem.vue";
+import TagItems from "@/components/TagItems.vue";
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import dayjs from "dayjs";
@@ -45,6 +46,26 @@ const selectedTagId = ref(null);
 const cardRef = ref(null);
 const togglingSubtaskId = ref(null);
 
+/* Close form on click outside the card*/
+useClickOutside(
+  cardRef,
+  () => {
+    handleCancel(props.tasksItem.id);
+  },
+  // showForm
+  computed(() => showForm.value || showTagDropdown.value)
+);
+
+/* Ensure only one form is open at a time */
+const openEditForm = () => {
+  showForm.value = true;
+  showTagDropdown.value = false;
+};
+const openTagDropdown = () => {
+  showTagDropdown.value = true;
+  showForm.value = false;
+};
+
 const handleToggle = async (subtaskId) => {
   togglingSubtaskId.value = subtaskId;
   await subtaskStore.toggleSubtaskCompletion(subtaskId);
@@ -53,21 +74,13 @@ const handleToggle = async (subtaskId) => {
 
 const handleAddTag = async () => {
   if (!selectedTagId.value) return;
-  // Call your backend to attach the tag to the task (many-to-many)
-  await tagStore.attachTagToTask(selectedTagId.value, props.tasksItem.id);
-  showTagDropdown.value = false;
+
+  /* Call the  backend to attach the tag to the task */
+  await tagStore.attachTagToTask(props.tasksItem.id, selectedTagId.value);
+  // showTagDropdown.value = false;
   selectedTagId.value = null;
   // Optionally, refresh the task's tags
 };
-
-/* Close form on click outside the card*/
-useClickOutside(
-  cardRef,
-  () => {
-    handleCancel(props.tasksItem.id);
-  },
-  showForm
-);
 
 const handleCancel = (id) => {
   showForm.value = false;
@@ -96,6 +109,11 @@ const formattedDate = computed(() => {
   } else {
     return dayjs(date).fromNow();
   }
+});
+
+const availableTags = computed(() => {
+  const existingTagIds = props.tasksItem.tags.map((tag) => tag.id);
+  return tagStore.tags.filter((tag) => !existingTagIds.includes(tag.id));
 });
 
 onMounted(async () => {
@@ -130,8 +148,11 @@ onMounted(async () => {
     <!-- Task content -->
     <section class="w-full ml-2">
       <div>
-        <!-- Form for adding tag -->
+        <!------------------------ Form for adding tag ------------------------>
         <template v-if="showTagDropdown">
+          <!-- Display tags -->
+          <TagItems :tagItem="tasksItem" class="h-full" />
+
           <div class="py-2 mr-4">
             <form @submit.prevent="handleAddTag" class="">
               <p
@@ -139,10 +160,13 @@ onMounted(async () => {
                 class="py-2 text-md font-bold text-gray-300 dark:text-gray-900">
                 {{ tasksItem.name }}
               </p>
-              <select v-model="selectedTagId" class="border rounded p-1">
+              <select
+                v-model="selectedTagId"
+                class="border rounded p-1"
+                placeholder="Select a tag">
                 <option disabled value="">Select a tag</option>
                 <option
-                  v-for="tag in tagStore.tags"
+                  v-for="tag in availableTags"
                   :key="tag.id"
                   :value="tag.id">
                   {{ tag.name }}
@@ -169,7 +193,7 @@ onMounted(async () => {
           </div>
         </template>
 
-        <!-- Form for updating task -->
+        <!------------------------ Form for updating task ------------------------>
         <template v-else-if="showForm">
           <div class="py-2 mr-4">
             <form @submit.prevent="handleUpdate(tasksItem)" class="">
@@ -195,7 +219,7 @@ onMounted(async () => {
           </div>
         </template>
 
-        <!-- Display normal text if not in edit/add mode, otherwise display form -->
+        <!------------------------ Display normal text if not in edit/add mode, otherwise display form ------------------------>
         <template v-else>
           <RouterLink
             @mousedown.prevent
@@ -209,30 +233,14 @@ onMounted(async () => {
               name="taskName"
               :class="[
                 tasksItem.tags.length > 0 ? 'w-2/4 sm:w-3/4 inline-flex' : '',
-                'py-2 text-md text-gray-300 dark:text-gray-900 bg-amber-400',
+                'py-2 text-md text-gray-300 dark:text-gray-900',
               ]">
               {{ tasksItem.name }}
             </p>
           </RouterLink>
 
           <!-- Display tags -->
-          <div
-            v-if="tasksItem.tags.length > 0"
-            class="absolute right-8 overflow-y-scroll w-2/4 sm:w-1/4 bg-amber-100 inline-flex h-14">
-            <div class="flex-wrap gap-1">
-              <span
-                v-for="tag in tasksItem.tags"
-                :key="tag.id"
-                class="px-2 py-1 rounded-full text-xs inline-flex"
-                :style="{
-                  backgroundColor: tag.color,
-                  color: colorContrast(tag.color),
-                }">
-                {{ tag.name }}
-              </span>
-            </div>
-          </div>
-          <!-- <span class="absolute bg-amber-100 w-1/4 h-full">{{ tags }}</span> -->
+          <TagItems :tagItem="tasksItem" class="h-14" />
         </template>
 
         <p class="text-xs text-gray-500 dark:text-gray-600 font-normal mb-1">
@@ -250,11 +258,9 @@ onMounted(async () => {
 
       <!-- Dropdown menu items -->
       <template #default>
-        <DropdownItem @click="showTagDropdown = !showTagDropdown">
-          Add Tag
-        </DropdownItem>
+        <DropdownItem @click="openTagDropdown"> Add Tag </DropdownItem>
 
-        <DropdownItem @click="showForm = !showForm">Edit</DropdownItem>
+        <DropdownItem @click="openEditForm">Edit</DropdownItem>
 
         <DropdownItem @click="handleDelete(tasksItem)">Delete</DropdownItem>
       </template>
