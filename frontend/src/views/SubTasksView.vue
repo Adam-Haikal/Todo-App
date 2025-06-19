@@ -20,7 +20,8 @@ const isLoading = ref(false);
 const showOngoing = ref(true);
 const showCompleted = ref(false);
 const headerRef = ref(null);
-const cardItemRef = ref(null);
+const OngoingRef = ref([]);
+const CompletedRef = ref([]);
 
 const handleSubmit = async (formData) => {
   await subtaskStore.createSubtask({
@@ -38,7 +39,12 @@ const handleUpdate = async (formData, index) => {
 
   await subtaskStore.updateSubtask(formData);
   /* Call handleCancel directly */
-  cardItemRef.value[index].handleCancel(formData.id);
+  if (OngoingRef.value[index]) {
+    OngoingRef.value[index].handleCancel(formData.id);
+  }
+  if (CompletedRef.value[index]) {
+    CompletedRef.value[index].handleCancel(formData.id);
+  }
 };
 
 const handleDelete = async (taskItem) => {
@@ -90,7 +96,7 @@ onMounted(async () => {
                 :handleUpdate="(formData) => handleUpdate(formData, index)"
                 :handleDelete="handleDelete"
                 isSubtask
-                ref="cardItemRef" />
+                ref="OngoingRef" />
             </div>
           </section>
 
@@ -105,10 +111,13 @@ onMounted(async () => {
             <div id="completedContainer" v-if="showCompleted">
               <CardItem
                 id="completedSubtasks"
-                v-for="subtask in subtaskStore.completedTasks"
+                v-for="(subtask, index) in subtaskStore.completedTasks"
                 :key="subtask.id"
                 :tasksItem="subtask"
-                isSubtask />
+                :handleUpdate="(formData) => handleUpdate(formData, index)"
+                :handleDelete="handleDelete"
+                isSubtask
+                ref="CompletedRef" />
             </div>
           </section>
         </div>

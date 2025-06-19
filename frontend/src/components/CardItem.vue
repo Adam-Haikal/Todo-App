@@ -81,15 +81,12 @@ const handleAddTag = async () => {
 
   /* Call the  backend to attach the tag to the task */
   await tagStore.attachTagToTask(props.tasksItem.id, selectedTagId.value);
-  // showTagDropdown.value = false;
   selectedTagId.value = null;
-  // Optionally, refresh the task's tags
 };
 
 const handleCancel = (id) => {
   showForm.value = false;
   showTagDropdown.value = false;
-  // selectedTagId.value = null;
   if (props.isSubtask) {
     subtaskStore.resetSubtaskName(id);
   } else {
@@ -116,7 +113,7 @@ const formattedDate = computed(() => {
 });
 
 const availableTags = computed(() => {
-  const existingTagIds = props.tasksItem.tags.map((tag) => tag.id);
+  const existingTagIds = (props.tasksItem.tags || []).map((tag) => tag.id);
   return tagStore.tags.filter((tag) => !existingTagIds.includes(tag.id));
 });
 
@@ -203,7 +200,7 @@ onMounted(async () => {
         <!------------------------ Form for updating task ------------------------>
         <template v-else-if="showForm">
           <div class="py-2 mr-4">
-            <form @submit.prevent="handleUpdate(tasksItem)" class="">
+            <form @submit.prevent="handleUpdate(tasksItem)">
               <Input
                 inputType="text"
                 v-model="tasksItem.name"
@@ -228,29 +225,47 @@ onMounted(async () => {
 
         <!------------------------ Display normal text if not in edit/add mode, otherwise display form ------------------------>
         <template v-else>
-          <RouterLink
-            @mousedown.prevent
-            :class="[isSubtask ? 'font-semibold cursor-default' : 'font-bold']"
-            :to="
-              isSubtask
-                ? {}
-                : { name: 'Subtasks', params: { id: tasksItem.id } }
-            ">
-            <p
-              name="taskName"
+          <div>
+            <RouterLink
+              @mousedown.prevent
               :class="[
-                tasksItem.tags.length > 0 ? 'w-2/4 sm:w-3/4 inline-flex' : '',
-                'py-2 text-md text-gray-300 dark:text-gray-900',
-              ]">
-              {{ tasksItem.name }}
-            </p>
-          </RouterLink>
+                isSubtask ? 'font-semibold cursor-default' : 'font-bold',
+                ' grid grid-cols-2',
+              ]"
+              :to="
+                isSubtask
+                  ? {}
+                  : { name: 'Subtasks', params: { id: tasksItem.id } }
+              ">
+              <p
+                name="taskName"
+                :class="[
+                  availableTags ? 'w-2/4 sm:w-3/4 inline-flex' : '',
+                  'py-2 text-md text-gray-300 dark:text-gray-900',
+                ]">
+                {{ tasksItem.name }}
+              </p>
 
-          <!-- Display tags -->
-          <TagItems
-            :tagItem="tasksItem"
-            class="h-14"
-            :handleRemoveTag="handleRemoveTag" />
+              <!-- display the number of completed and uncompleted subtasks for each task -->
+              <p
+                v-if="!isSubtask"
+                class="py-2 text-md text-gray-300 dark:text-gray-900">
+                {{
+                  tasksItem.subtasks.filter((subtask) => subtask.completed)
+                    .length
+                }}/{{ tasksItem.subtasks.length }}
+                <span class="font-normal">completed</span>
+              </p>
+            </RouterLink>
+
+            <!-- Display tags -->
+            <template v-if="tasksItem.tags">
+              <TagItems
+                :tagItem="tasksItem"
+                class="h-14 absolute top-0"
+                :handleRemoveTag="handleRemoveTag" />
+            </template>
+          </div>
         </template>
 
         <p class="text-xs text-gray-500 dark:text-gray-600 font-normal mb-1">
@@ -268,7 +283,9 @@ onMounted(async () => {
 
       <!-- Dropdown menu items -->
       <template #default>
-        <DropdownItem @click="openTagDropdown"> Add Tag </DropdownItem>
+        <DropdownItem v-if="!isSubtask" @click="openTagDropdown">
+          Add Tag
+        </DropdownItem>
 
         <DropdownItem @click="openEditForm">Edit</DropdownItem>
 

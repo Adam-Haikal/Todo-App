@@ -11,7 +11,7 @@ class TaskController extends Controller
     public function index()
     {
         /* Display tasks for specific user */
-        $tasks = Task::with('tags')
+        $tasks = Task::with('tags', 'subtasks')
             ->where('user_id', auth()->id())
             ->latest()
             ->get();

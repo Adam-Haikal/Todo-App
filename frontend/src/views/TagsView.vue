@@ -4,8 +4,8 @@ import { useTagStore } from "@/stores/tag";
 import { useUserStore } from "@/stores/user";
 import { colorContrast } from "@/composables/colorContrast";
 import Header from "@/components/Header.vue";
+import TagItems from "@/components/TagItems.vue";
 import { HalfCircleSpinner } from "epic-spinners";
-import TagItems from "../components/TagItems.vue";
 
 const tagStore = useTagStore();
 const userStore = useUserStore();
@@ -58,24 +58,6 @@ onMounted(async () => {
         pillClass="text-sm font-medium px-4 py-2"
         :handleRemoveTag="tagStore.deleteTag" />
       <div class="flex flex-wrap gap-2">
-        <!-- <span
-          v-for="tag in tagStore.tags"
-          :key="tag"
-          :style="{
-            backgroundColor: tag.color,
-            color: colorContrast(tag.color),
-          }"
-          class="text-sm font-medium px-4 py-2 rounded-full shadow-md">
-          {{ tag.name }} -->
-
-        <!-- Check if the owner of the tag is the current user -->
-        <!-- <span
-            v-if="tag.user_id === userStore.user.id"
-            @click="tagStore.deleteTag(tag)"
-            class="cursor-pointer ml-1">
-            X
-          </span>
-        </span> -->
 
         <!-- Display no subtasks message -->
         <div
