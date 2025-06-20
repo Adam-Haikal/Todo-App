@@ -94,10 +94,6 @@ const handleCancel = (id) => {
   }
 };
 
-defineExpose({
-  handleCancel,
-});
-
 /**
  * If updated date is less than 7 days ago,
  * show relative time, otherwise show date
@@ -158,7 +154,7 @@ onMounted(async () => {
             :handleRemoveTag="handleRemoveTag" />
 
           <div class="py-2 mr-4">
-            <form @submit.prevent="handleAddTag" class="">
+            <form @submit.prevent="handleAddTag">
               <p
                 name="taskName"
                 class="py-2 text-md font-bold text-gray-300 dark:text-gray-900">
@@ -167,7 +163,8 @@ onMounted(async () => {
               <select
                 v-model="selectedTagId"
                 class="border rounded p-1"
-                placeholder="Select a tag">
+                placeholder="Select a tag"
+                name="tagSelect">
                 <option disabled value="">Select a tag</option>
                 <option
                   v-for="tag in availableTags"
@@ -200,7 +197,11 @@ onMounted(async () => {
         <!------------------------ Form for updating task ------------------------>
         <template v-else-if="showForm">
           <div class="py-2 mr-4">
-            <form @submit.prevent="handleUpdate(tasksItem)">
+            <form
+              @submit.prevent="
+                handleUpdate(tasksItem);
+                handleCancel(tasksItem.id);
+              ">
               <Input
                 inputType="text"
                 v-model="tasksItem.name"
@@ -248,7 +249,7 @@ onMounted(async () => {
 
               <!-- display the number of completed and uncompleted subtasks for each task -->
               <p
-                v-if="!isSubtask"
+                v-if="!isSubtask && tasksItem.subtasks"
                 class="py-2 text-md text-gray-300 dark:text-gray-900">
                 {{
                   tasksItem.subtasks.filter((subtask) => subtask.completed)
@@ -256,6 +257,7 @@ onMounted(async () => {
                 }}/{{ tasksItem.subtasks.length }}
                 <span class="font-normal">completed</span>
               </p>
+              <p v-else>0/0 <span class="font-normal">completed</span></p>
             </RouterLink>
 
             <!-- Display tags -->

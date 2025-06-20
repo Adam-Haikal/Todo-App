@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import axiosClient from "@/axios";
 import router from "@/router";
+import { useTaskStore } from "@/stores/task";
+import { useSubtaskStore } from "@/stores/subtask";
+import { useTagStore } from "@/stores/tag";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -17,6 +20,10 @@ export const useUserStore = defineStore("user", {
   actions: {
     clearUser() {
       this.user = null;
+
+      useTaskStore().tasks = [];
+      useSubtaskStore().subtasks = [];
+      useTagStore().tags = [];
     },
 
     clearErrors() {

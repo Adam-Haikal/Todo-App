@@ -2,7 +2,6 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useSubtaskStore } from "@/stores/subtask";
-import { useTaskStore } from "@/stores/task";
 import Header from "@/components/Header.vue";
 import CardItem from "@/components/CardItem.vue";
 import ItemCount from "@/components/ItemCount.vue";
@@ -11,10 +10,8 @@ import dayjs from "dayjs";
 
 const route = useRoute();
 const subtaskStore = useSubtaskStore();
-const taskStore = useTaskStore();
 
 const taskId = route.params.id;
-const task = ref({});
 
 const isLoading = ref(false);
 const showOngoing = ref(true);
@@ -38,13 +35,6 @@ const handleUpdate = async (formData, index) => {
   formData.updated_at = dayjs().toISOString();
 
   await subtaskStore.updateSubtask(formData);
-  /* Call handleCancel directly */
-  if (OngoingRef.value[index]) {
-    OngoingRef.value[index].handleCancel(formData.id);
-  }
-  if (CompletedRef.value[index]) {
-    CompletedRef.value[index].handleCancel(formData.id);
-  }
 };
 
 const handleDelete = async (taskItem) => {
@@ -55,9 +45,6 @@ onMounted(async () => {
   isLoading.value = true;
   subtaskStore.subtasks = [];
   try {
-    /* Get task name from parent task */
-    task.value = await taskStore.getTask(taskId);
-    /* Fetch parent task details */
     await subtaskStore.getSubtasks(taskId);
   } catch (error) {
     console.error("Error fetching subtasks:", error);
@@ -70,7 +57,7 @@ onMounted(async () => {
   <!-- Listen to isToggling in CardItem and change cursor to wait-->
   <div>
     <Header
-      :title="task.name"
+      :title="subtaskStore.subtasks[0]?.task?.name"
       dataType="subtask"
       subtitle="Enter subtask name"
       :handleSubmit="handleSubmit"

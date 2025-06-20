@@ -1,8 +1,5 @@
 <script setup>
-import { useTagStore } from "@/stores/tag";
 import { colorContrast } from "@/composables/colorContrast";
-
-const tagStore = useTagStore();
 
 const props = defineProps({
   tagItem: {
@@ -22,7 +19,7 @@ const props = defineProps({
 
 <template>
   <div
-    v-if="tagItem.tags.length > 0"
+    v-if="tagItem.tags && tagItem.tags.length > 0"
     class="absolute right-10 overflow-y-scroll w-2/4 sm:w-1/4 inline-flex">
     <div>
       <span

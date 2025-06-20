@@ -21,6 +21,7 @@ export const useSubtaskStore = defineStore("subtask", {
   actions: {
     /* Fetch subtasks */
     async getSubtasks(taskId) {
+      if (this.subtasks.length) return; // Prevent refetch if already loaded
       try {
         const response = await axiosClient.get(
           `/api/subtasks?task_id=${taskId}`

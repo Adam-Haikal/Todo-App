@@ -29,6 +29,7 @@ const filteredTasks = computed(() => {
 
 const handleSubmit = async (formData) => {
   await taskStore.createTask(formData);
+
   /* Call handleCancel directly */
   headerRef.value.handleCancel();
 };
@@ -38,8 +39,6 @@ const handleUpdate = async (formData, index) => {
   formData.updated_at = dayjs().toISOString();
 
   await taskStore.updateTask(formData);
-  /* Call handleCancel directly */
-  cardItemRef.value[index].handleCancel(formData.id);
 };
 
 const handleDelete = async (taskItem) => {

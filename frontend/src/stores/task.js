@@ -18,6 +18,7 @@ export const useTaskStore = defineStore("task", {
   actions: {
     /* Fetch tasks  */
     async getTasks() {
+      if (this.tasks.length) return; // Prevent refetch if already loaded
       try {
         const response = await axiosClient.get("/api/tasks");
 

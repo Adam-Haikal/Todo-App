@@ -16,6 +16,7 @@ export const useTagStore = defineStore("tag", {
   actions: {
     /* Fetch tags  */
     async getTags() {
+      if (this.tags.length) return; // Prevent refetch if already loaded
       try {
         const response = await axiosClient.get("/api/tags");
         this.tags = response.data;

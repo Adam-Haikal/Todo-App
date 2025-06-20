@@ -24,7 +24,8 @@ class SubtaskController extends Controller
         }
 
         /* Display tasks for specific user */
-        $subtasks = Subtask::where('task_id', $taskId)
+        $subtasks = Subtask::with('task:id,name') /* Eager load only id and name */
+            ->where('task_id', $taskId)
             ->whereHas('task', function ($query) {
                 $query->where('user_id', auth()->id());
             })
