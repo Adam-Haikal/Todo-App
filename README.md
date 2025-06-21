@@ -12,15 +12,11 @@
 - ✅ **Task Management**
   - Create, read, update, and delete tasks
   - Track progress of individual subtasks
+  - Attach tags and filter by tag
 
 - 🧩 **Subtask Management**
   - Create, read, update, and delete subtasks under each main task
-  
-
-- 🎯 **User Dashboard**
-  - View your tasks and subtasks at a glance
-  - Easily manage your daily and long-term plans
-
+  - 
 ---
 
 ## 🚀 Tech Stack
