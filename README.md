@@ -16,7 +16,6 @@
 
 - 🧩 **Subtask Management**
   - Create, read, update, and delete subtasks under each main task
-  - 
 ---
 
 ## 🚀 Tech Stack
